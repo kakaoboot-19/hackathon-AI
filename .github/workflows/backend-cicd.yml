@@ -72,12 +72,12 @@ jobs:
             docker pull ${IMAGE_NAME}:${IMAGE_TAG}
             docker pull ${IMAGE_NAME}:latest
             
-            docker-compose down || true
+            docker compose down || true
             
             export IMAGE_TAG=${IMAGE_TAG}
-            docker-compose up -d
+            docker compose up -d
             
-            docker-compose ps
+            docker compose ps
             
             # 이전 이미지 정리 (최신 3개 버전만 유지)
             docker images ${IMAGE_NAME} --format "{{.Tag}}" | \
