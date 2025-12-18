@@ -69,8 +69,8 @@ class UserGitBTIResult(BaseModel):
 
 class TeamReportData(BaseModel):
     """팀 리포트"""
-    synergy: str = Field(..., description="팀 시너지 평가")
-    warning: str = Field(..., description="팀 위험요소 평가")
+    synergy: List[str] = Field(..., description="팀 시너지 평가 (문장 단위 리스트)")
+    warning: List[str] = Field(..., description="팀 위험요소 평가 (문장 단위 리스트)")
 
 
 class GitBTIBatchResponse(BaseModel):
@@ -186,9 +186,14 @@ async def create_gitbti_batch(req: GitBTIBatchRequest):
                 for r in results
             ]
             team_report_data = await asyncio.to_thread(generate_team_report, team_data)
+
+            # synergy와 warning을 .으로 split하여 리스트로 변환 (빈 문자열 제거)
+            synergy_list = [s.strip() for s in team_report_data["synergy"].split(".") if s.strip()]
+            warning_list = [s.strip() for s in team_report_data["warning"].split(".") if s.strip()]
+
             team_report = TeamReportData(
-                synergy=team_report_data["synergy"],
-                warning=team_report_data["warning"]
+                synergy=synergy_list,
+                warning=warning_list
             )
             print(f"✅ 팀 리포트 생성 완료!")
 
