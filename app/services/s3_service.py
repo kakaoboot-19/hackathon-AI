@@ -13,7 +13,6 @@ class S3Service:
         self.aws_secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
         self.aws_region = os.getenv("AWS_REGION", "ap-northeast-2")
         self.s3_bucket = os.getenv("S3_BUCKET_NAME")
-        self.cloudfront_domain = os.getenv("CLOUDFRONT_DOMAIN")  # CloudFront 도메인
         
         # 환경변수가 모두 있으면 S3 클라이언트 생성
         if self.aws_access_key and self.aws_secret_key and self.s3_bucket:
@@ -23,7 +22,10 @@ class S3Service:
                 aws_secret_access_key=self.aws_secret_key,
                 region_name=self.aws_region
             )
+            # S3 버킷 URL 생성
+            self.s3_base_url = f"https://{self.s3_bucket}.s3.{self.aws_region}.amazonaws.com"
             print(f"S3 연결: {self.s3_bucket}")
+            print(f"S3 Base URL: {self.s3_base_url}")
         else:
             self.s3_client = None
     
@@ -54,8 +56,8 @@ class S3Service:
                 }
             )
             
-            # 5. 업로드된 파일의 공개 URL 생성 (CloudFront)
-            image_url = f"https://{self.cloudfront_domain}/{file_key}"
+            # 5. 업로드된 파일의 공개 URL 생성 (S3 Direct)
+            image_url = f"{self.s3_base_url}/{file_key}"
             
             return {
                 "success": True,
@@ -106,8 +108,8 @@ class S3Service:
                 }
             )
             
-            # 6. 업로드된 파일의 공개 URL 생성 (CloudFront)
-            image_url = f"https://{self.cloudfront_domain}/{file_key}"
+            # 6. 업로드된 파일의 공개 URL 생성 (S3 Direct)
+            image_url = f"{self.s3_base_url}/{file_key}"
             
             return {
                 "success": True,
