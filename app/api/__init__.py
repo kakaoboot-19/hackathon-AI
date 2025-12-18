@@ -110,10 +110,10 @@ async def create_gitbti(req: GitBTIRequest):
                 description="Git-BTI 캐릭터 이미지"
             ),
             stats=StatsData(
-                dayVsNight=50,  # TODO: percentage에서 파싱
-                steadyVsBurst=50,
-                indieVsCrew=50,
-                specialVsGeneral=50
+                dayVsNight=prompt_result["stats"]["dayVsNight"],
+                steadyVsBurst=prompt_result["stats"]["steadyVsBurst"],
+                indieVsCrew=prompt_result["stats"]["indieVsCrew"],
+                specialVsGeneral=prompt_result["stats"]["specialVsGeneral"]
             )
         )
 
