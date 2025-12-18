@@ -58,7 +58,7 @@ async def create_gitbti(req: GitBTIRequest):
     """
     try:
         # 1. GitHub 데이터 수집
-        github_data = get_github_data(req.username)
+        # github_data = get_github_data(req.username)
         
         # # 2. AI 분석
         # gitbti_result = analyze_gitbti(github_data)
