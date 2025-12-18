@@ -1,11 +1,13 @@
-my_gbti = "NACS"
-one_person_gbti = "NBIG"
-two_person_gbti = "DBIG"
-three_person_gbti = "NBCG"
-four_person_gbti = "DAIS"
-five_person_gbti = "DBCS"
+one_person_gbti = "NACS"
+two_person_gbti = "NBIG"
+three_person_gbti = "DBIG"
+four_person_gbti = "NBCG"
+five_person_gbti = "DAIS"
+six_person_gbti = "DBCS"
 
-person_message_list = [one_person_gbti, two_person_gbti, three_person_gbti, four_person_gbti, five_person_gbti]
+
+
+team_gbti_list = [one_person_gbti, two_person_gbti, three_person_gbti, four_person_gbti, five_person_gbti, six_person_gbti]
 
 import openai
 import json
@@ -18,8 +20,7 @@ two_person_gbti: {two_person_gbti}
 three_person_gbti: {three_person_gbti}
 four_person_gbti: {four_person_gbti}
 five_person_gbti: {five_person_gbti}
-
-my_message: {my_gbti}
+six_person_gbti: {six_person_gbti}
 """
 response = client.chat.completions.create(
     model="gpt-4o-mini",
@@ -45,8 +46,11 @@ response = client.chat.completions.create(
                 "총 16가지 조합이 가능하다."
                 "너는 개발자 간 성향 비교 전문가이다. "
                 "다른 모든 사람과의 gbti를 비교하여 각각 그 개발자와의 성향 궁합을 판단하라. "
+                "그리고 이 팀의 궁합을 판단하라"
+                "즉, 팀원 1 : NACS, 팀원 2 : NBIG, 팀원 3 : DBIG, 팀원 4 : NBCG, 팀원 5 : DAIS, 팀원 6 : DBCS 라면 이 각 성향을 고려해 팀 전체의 시너지와 위험요소를 파악하라."
                 "반드시 JSON 형식으로만 출력하라."
-                "궁합 결과는 한 문장으로 말하라. "
+                "반드시, 시너지에 대한 평가와 위험요소에 대한 평가를 수행하라."
+                "시너지,위험요소 각각을 3줄씩 말하라."
             )
         },
         {
@@ -60,11 +64,8 @@ response = client.chat.completions.create(
 
 다음 형식으로 출력하라:
 {{
-        "first_person_compatibility": "첫번째 사람과의 궁합 결과를 한 문장으로 말하라. ",
-        "two_person_compatibility": "두번째 사람과의 궁합 결과를 한 문장으로 말하라. ",
-        "third_person_compatibility": "세번째 사람과의 궁합 결과를 한 문장으로 말하라. ",
-        "fourth_person_compatibility": "네번째 사람과의 궁합 결과를 한 문장으로 말하라. ",
-        "five_person_compatibility": "다섯번째 사람과의 궁합 결과를 한 문장으로 말하라. ",
+        "senergy": "시너지에 대한 평가를 3줄로 말하라.",
+        "warning": "위험요소에 대한 평가를 3줄로 말하라."
 }}
 """
         }
@@ -74,7 +75,28 @@ response = client.chat.completions.create(
 
 generation_prompt = response.choices[0].message.content
 
-generation_dict = json.loads(generation_prompt)
+# 응답이 비어있는지 확인
+if not generation_prompt:
+    raise ValueError("LLM 응답이 비어있습니다.")
+
+# 마크다운 코드 블록 제거 (```json ... ``` 형식)
+if generation_prompt.strip().startswith("```"):
+    # 첫 번째 ``` 부터 마지막 ``` 까지 제거
+    lines = generation_prompt.strip().split("\n")
+    # 첫 줄과 마지막 줄이 ``` 로 시작/끝나면 제거
+    if lines[0].startswith("```"):
+        lines = lines[1:]
+    if lines and lines[-1].strip() == "```":
+        lines = lines[:-1]
+    generation_prompt = "\n".join(lines)
+
+# JSON 파싱 시도
+try:
+    generation_dict = json.loads(generation_prompt)
+except json.JSONDecodeError as e:
+    print(f"JSON 파싱 오류: {e}")
+    print(f"응답 내용:\n{generation_prompt}")
+    raise
 
 print("GPT-4o-mini 궁합 결과 \n", generation_dict)
 
