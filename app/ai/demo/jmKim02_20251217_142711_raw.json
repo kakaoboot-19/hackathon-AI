@@ -1,0 +1,813 @@
+{
+  "data": {
+    "user": {
+      "login": "jmKim02",
+      "name": "Jongmin Kim",
+      "bio": "",
+      "company": null,
+      "location": null,
+      "websiteUrl": null,
+      "twitterUsername": null,
+      "createdAt": "2024-06-30T01:39:33Z",
+      "updatedAt": "2025-12-17T02:04:43Z",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/174222202?v=4",
+      "followers": {
+        "totalCount": 1
+      },
+      "following": {
+        "totalCount": 1
+      },
+      "repositories": {
+        "totalCount": 18,
+        "nodes": [
+          {
+            "name": "3-james-kim-community-BE",
+            "description": null,
+            "createdAt": "2025-10-24T00:15:09Z",
+            "updatedAt": "2025-12-09T05:18:39Z",
+            "stargazerCount": 0,
+            "forkCount": 0,
+            "isArchived": false,
+            "isFork": false,
+            "primaryLanguage": {
+              "name": "Java",
+              "color": "#b07219"
+            },
+            "languages": {
+              "totalSize": 202963,
+              "edges": [
+                {
+                  "size": 166569,
+                  "node": {
+                    "name": "Java",
+                    "color": "#b07219"
+                  }
+                },
+                {
+                  "size": 26886,
+                  "node": {
+                    "name": "HTML",
+                    "color": "#e34c26"
+                  }
+                },
+                {
+                  "size": 8717,
+                  "node": {
+                    "name": "CSS",
+                    "color": "#663399"
+                  }
+                },
+                {
+                  "size": 791,
+                  "node": {
+                    "name": "Dockerfile",
+                    "color": "#384d54"
+                  }
+                }
+              ]
+            },
+            "readme": {
+              "text": "# 📌 프로젝트명: 와글와글 커뮤니티 (WagleWagle Community)\n개인적인 고민부터 개발 이야기까지 자유롭게 소통할 수 있는 **커뮤니티 플랫폼의 백엔드 API 서버**입니다.  \n초기 ERD설계부터 Spring Boot와 JPA를 기반으로 RESTful API를 설계하고, **JWT 인증/인가**, **QueryDSL 기반 성능 개선**, **AWS 인프라 구축**, **CI/CD 파이프라인 구성 및 무중단 배포**까지 전 과정을 직접 구현했습니다.  \n또한, 대용량 트래픽(목표 MAU 100만+)까지 고려한 확장 가능한 아키텍처를 지향합니다.\n\n---\n\n\n## 📅 개발 인원 및 기간\n- 개발 기간 : 2025-09 ~ 2025-11 \n- 개발 인원 : 1인 (프론트엔드 & 백엔드 전체 개발)\n\n<br/>\n   \n## 사용 기술 및 tools\n### Backend\n\n- **Framework:** Spring Boot 3.5\n- **Language:** Java 21  \n- **ORM:** JPA (Hibernate), QueryDSL  \n- **Database:** MySQL 8.0  \n- **Build Tool:** Gradle  \n\n### Infrastructure & DevOps\n\n- **Cloud:** AWS (VPC, ECS Fargate, ECR, ALB, Lambda, S3, RDS, CloudFront, CloudWatch)  \n- **CI/CD:** GitHub Actions\n- Docker, Nginx\n     \n- 서버 아키텍처\n<img width=\"600\" height=\"500\" alt=\"스크린샷 2025-12-06 오후 10 32 57\" src=\"https://github.com/user-attachments/assets/4e28d848-9caa-4634-81bc-2b2ad8be0d55\" />\n\n\n<br/>\n\n## 관련 링크\n- [프론트엔드 레포지토리](https://github.com/100-hours-a-week/3-james-kim-community-FE)\n- [서비스 데모영상](https://drive.google.com/file/d/1QRmcLbqeb0l4wt5sW-tfE6V8EwNk_P0A/view?usp=sharing)\n\n<br/>\n\n---\n\n## 폴더 구조\n<details>\n<summary>📁 폴더 구조 보기 / 접기</summary>\n   \n```bash\nsrc/main/java/ktb/cloud_james/community/\n├── controller/          # REST API 엔드포인트\n│   ├── AuthController.java\n│   ├── UserController.java\n│   ├── PostController.java\n│   ├── CommentController.java\n│   ├── LikeController.java\n│   ├── HealthController.java\n│   └── PolicyController.java # SSR 이용약관, 개인정보 처리방침\n│\n├── service/            # 비즈니스 로직\n│   ├── AuthService.java\n│   ├── UserService.java\n│   ├── PostService.java\n│   ├── CommentService.java\n│   ├── LikeService.java\n│   └── ViewCountCacheService.java\n│\n├── repository/         # 데이터 접근 계층\n│   ├── UserRepository.java\n│   ├── UserTokenRepository.java\n│   ├── PostRepository.java\n│   ├── PostRepositoryCustom.java\n│   ├── PostRepositoryImpl.java  # QueryDSL 구현체\n│   ├── PostStatsRepository.java\n│   ├── PostImageRepository.java\n│   ├── PostLikeRepository.java\n│   ├── CommentRepository.java\n│   ├── CommentRepositoryCustom.java\n│   └── CommentRepositoryImpl.java\n│\n├── entity/             # JPA 엔티티\n│   ├── User.java\n│   ├── UserToken.java\n│   ├── Post.java\n│   ├── PostStats.java\n│   ├── PostImage.java\n│   ├── PostLike.java\n│   └── Comment.java\n│\n├── dto/                # 요청/응답 DTO\n│   ├── auth/\n│   ├── user/\n│   ├── post/\n│   ├── comment/\n│   ├── like/\n│   └── common/\n│\n└── global/             # 전역 설정 및 공통 모듈\n    ├── config/\n    ├── security/\n    ├── exception/\n    └── util/\n```\n</details>\n\n---\n\n## 주요 기능\n### 1️⃣ 인증 & 보안\n- JWT 기반 Stateless 이중 토큰 인증 시스템 구현\n   - 적용 배경: 분산 환경에서의 확장성을 고려하여 세션 방식 대신 JWT 방식 채택\n   - Spring Security + Custom Filter를 통한 요청 인증\n   - Refresh Token 화이트리스트 관리로 탈취 리스크 최소화\n\n### 2️⃣ 성능 최적화\n- 조회수 캐싱 시스템 (In-Memory Cache)\n   - 적용 배경: 게시글 조회 시마다 잦은 DB 업데이트로 인한 부하 발생\n   - `ConcurrentHashMap` + `AtomicLong` 기반 Thread-safe 캐싱\n- QueryDSL 기반 N+1 문제 해결\n   - 적용 배경: JPA의 지연 로딩으로 인한 반복 쿼리 발생\n   - 게시글/댓글 목록 조회 시 JOIN 최적화 (N+1 → 1 쿼리)\n   - 게시글/댓글 Cursor 기반 무한 스크롤 페이징 구현\n\n### 3️⃣ 인프라 & DevOps\n- 컨테이너 기반 아키텍처\n   - 적용 배경: EC2 기반 배포의 확장성 한계 및 운영 복잡도 증가\n   - ECS Fargate + ALB를 통한 무중단 Rolling 배포\n   - 트래픽 변화 유연한 대응을 위한 Auto Scaling 도입\n   - Private Subnet 격리로 네트워크 보안 강화 (RDS, ECS(WAS))\n- CI/CD 파이프라인 구축\n   - 적용 배경: 배포 속도 개선 및 휴먼 에러 방지, 무중단 배포가 현대에는 거의 필수적\n   - GitHub Actions 기반 빌드/테스트/배포 자동화\n   - ECR 중앙 이미지 관리 및 버전별 롤백 지원\n\n---\n\n## 💡 기술적 도전과 해결 과정\n### 1️⃣ 동시성 제어와 캐싱 전략\n**문제 상황**   \n게시글 조회 시마다 DB에 조회수 업데이트 쿼리를 실행하면서, 동시 접속자 증가 시 DB 병목 현상 발생   \n   \n**해결 과정**\n- 1차 시도: Redis 분산 캐시 도입 검토\n   - 초기 프로젝트 규모와 인프라 복잡도를 고려했을 때 과도한 엔지니어링으로 판단\n   - 단일 서버 환경에서는 In-Memory 캐시만으로도 충분한 성능 개선 가능\n- 최종 해결:\n   - `ConcurrentHashMap<Long, AtomicLong>`으로 Thread-safe한 조회수 캐싱 구현\n   - 스케줄러(`@Scheduled`)를 통해 30초마다 배치 DB 동기화\n   - 서버 종료 시 `@PreDestroy`로 강제 동기화하여 데이터 손실 최소화\n     \n**기술적 근거**\n- 조회수는 실시간 정합성이 크게 중요하지 않은 통계성 데이터\n- 수십 초 단위의 지연은 사용자 경험에 큰 영향을 주지 않음\n- 단일 서버 환경에서는 인메모리 캐시로도 동시성 제어 가능\n- 향후 서버 증설 시에도 Redis로 전환이 용이한 구조 설계\n   \n**성과**   \n- 게시글 조회 응답 속도 평균 30% 개선\n- DB 커넥션 풀 사용률 감소로 전체 시스템 안정성 향상\n\n**확장 가능성**\n- 트래픽 증가 및 멀티 서버 환경으로 확장 시, 현재 ViewCountCacheService를 Redis 기반 구현체로 교체하는 것만으로 분산 캐싱 적용 가능\n- 인터페이스 분리를 통해 확장성을 고려한 설계 완료\n\n<br/>\n\n### 2️⃣ JWT 인증 전략 (프론트엔드 + 백엔드)\n**문제 상황**\n프론트엔드가 Vanilla JS 기반 MPA 구조로, SPA처럼 메모리 상태 관리 불가. Access Token 저장 위치 및 자동 갱신 전략 필요\n    \n**해결 과정**\n- 1차 시도: 메모리(JavaScript 변수)에 토큰 저장\n   - MPA 특성상 페이지 이동 시마다 토큰 소실\n   - 매번 로그인이 필요한 심각한 UX 저하 발생\n- 2차 시도: 쿠키에 Access Token과 Refresh Token 모두 저장\n   - CSRF(Cross-Site Request Forgery) 공격 취약점 존재\n   - 두 토큰을 동일한 저장소에 보관하는 것은 보안 관점에서 부적절\n- 최종 해결:\n   - Access Token: `localStorage`에 저장하여 페이지 간 유지\n   - Refresh Token: `HttpOnly` 쿠키에 저장 (JavaScript 접근 차단)\n   - 페이지 로드 시 Refresh Token으로 Access Token 자동 재발급 로직 구현\n   - Spring Security의 JwtAuthenticationFilter에서 토큰 검증 및 인증 처리\n   \n**기술적 근거**\n- `sessionStorage`와 `localStorage` 모두 XSS 공격에 동일하게 노출되므로, 페이지 간 토큰 유지가 필요한 MPA 특성상 `localStorage` 선택이 합리적\n- XSS 리스크 완화를 위해 Access Token 만료 시간을 일반적인 표준 시간보다 짧게 설정\n- Refresh Token은 엄격한 화이트리스트 관리 및 쿠키 보안 옵션(HttpOnly, SameSite) 적용\n- 이후 상황에 따라 보안 이슈가 크게 느껴진다면, RTR 패턴까지 가능성 열어둠\n    \n**확장 가능성**\n- 세션 기반 인증도 고려했으나, 다음 이유로 JWT 방식을 최종 선택:\n   - 모바일 확장성: 향후 앱 개발 시 세션보다 토큰 기반이 유리\n   - 분산 환경 대응: 현대적인 MSA 구조로 확장 시 Stateless한 JWT가 서버 간 인증 공유에 적합\n   - 서버 부하 감소: 세션 저장소 관리 부담 제거 및 수평 확장 용이\n\n<br/>\n\n### 3️⃣ EC2 → ECS Fargate 마이그레이션 (인프라 구조 발전)\n**문제 상황**    \n초기 EC2 기반 배포는 서버 관리 부담이 크고, Auto Scaling 설정이 복잡했음. 특히 트래픽 증가에 따라 컨테이너 인스턴스가 늘어날 경우 수동 관리의 한계가 명확\n       \n**해결 과정**\n- Phase 1: Docker 컨테이너화\n   - 개발/운영 환경 불일치 문제 해결\n- Phase 2: Amazon ECR 도입\n   - 컨테이너 이미지 중앙 집중 관리\n   - 버전별 이미지 히스토리 관리 및 롤백 용이성 확보\n- Phase 3: ECS Fargate로 전환\n   - Task Definition: CPU, 메모리, 컨테이너 스펙을 코드로 정의\n   - Service: Desired Count 기반 자동 복구 및 Rolling Update 설정\n   - ALB 연동: Target Group을 통한 트래픽 분산 및 무중단 배포 구현\n\n**마이그레이션 선택 근거**\n1. 컨테이너 오케스트레이션 필요성   \n- 초기에는 EC2 작은 규모의 ASG 정도로 충분하지만, 운영 환경에서는 확장성이 핵심\n- EKS(Kubernetes)는 현재 프로젝트 규모 대비 과도한 복잡도\n- 일반적인 성장 단계의 서비스는 ECS로 충분한 기능 제공\n   \n2. 비용 대비 효율성\n- 직접 비용: Fargate는 EC2 대비 약 20-30% 서버 비용 증가\n- 간접 비용: 컨테이너 관리, 서버 패치, 보안 업데이트, 모니터링 설정 등 운영 인력 비용 감소\n- 최종 판단: 인프라 관리 부담 제거로 인한 개발 생산성 향상이 추가 비용 상쇄할 것\n- ECS on EC2 vs Fargate: 비용은 절감되나 EC2 인스턴스 관리 부담은 여전히 존재하므로 Fargate의 서버리스 장점 우선\n    \n3. 배포 자동화 및 안정성\n- Task 단위 Auto Scaling으로 트래픽 변화에 즉각 대응 용이\n- CI/CD 파이프라인과의 자연스러운 통합 \n   - Rolling Update 기본 제공, 필요 시 Blue/Green, Canary 배포로 전환 용이\n- ECR과 연계해 배포 속도 증가\n\n<br/>\n\n### 4️⃣ CI/CD 파이프라인 최적화\n**문제 상황**\n초기 GitHub Actions 빌드 시 매번 전체 의존성 다운로드로 빌드 시간 길어지고 배포 속도 저하로 빠른 개발 사이클 구축 어려움\n\n**해결 과정**\n- Phase 1: Multi-stage Dockerfile 최적화\n   - Gradle 의존성 캐시 레이어 분리 및 JRE 경량화\n   - 이미지 크기 약 40% 이상 감소\n\n- Phase 2: CI/CD 워크플로우 분리 및 캐싱 전략\n   - CI 단계: GitHub Actions `actions/cache`로 Gradle 의존성 캐싱\n   - CD 단계: ECR 푸시 및 배포 분리 (Blue/Green 무중단 배포 포함)\n   - Dockerfile과 워크플로우 역할 분리로 캐싱 중복 제거\n\n- Phase 3: Private Subnet 배포를 위한 Self-hosted Runner\n   - 문제: GitHub-hosted Runner는 WAS Private Subnet 내 접근 불가 \n   - 해결: Private Subnet EC2에 Self-hosted Runner 구축\n      - VPC 내부에서 CD 작업 수행\n      - ECR Layer Caching 효과 극대화 (동일 VPC 내부 통신)\n\n- Phase 4: ECS Fargate 통합으로 파이프라인 단순화\n   - Self-hosted Runner 제거 (ECS가 Private Subnet에서 테스크 직접 실행)\n   - ECS Service Rolling Update로 무중단 배포 자동화\n\n**성과**\n- 빌드 시간 약 30% 단축 (의존성 재사용 효과)\n- 배포 자동화로 수동 작업 대폭 감소\n- 무중단 배포 및 Health Check 기반 자동 롤백 구현\n\n**확장 가능성**\n- ECS Service 특성으로 Blue/Green, Canary 배포 전환 용이\n- 추가 마이크로서비스 확장 시에도 동일 파이프라인 재사용 가능\n\n---\n\n## 프로젝트 회고\n이 프로젝트를 통해 \"좋은 기술\"이 아닌 \"적합한 기술\"을 선택하는 기준을 세울 수 있었습니다. Redis, Kubernetes 같은 검증된 기술들도 고려했지만, 현재 규모에서는 In-Memory 캐싱과 ECS Fargate가 더 적합하다고 판단했습니다.     \n다만, 실제로 ECS Task를 다중으로 운영하며 분산 환경에서 인메모리 캐싱의 한계를 직접 경험했습니다. 각 Task가 독립적인 캐시를 가지면서 조회수 동기화에 오차가 발생했고, 데이터 정합성이 중요한 데이터는 아니지만, 이를 통해 초기 단계에서도 상태 공유가 필요한 데이터는 Redis 같은 중앙 집중식 캐시가 필요하다는 것을 깨달았습니다. 기술 선택은 현재에 적합해야 하지만, 실제 운영 환경에서 발생하는 문제를 통해 다음 단계의 필요성을 미리 파악할 수 있었습니다.\n     \n모든 선택에는 Trade-off가 있었습니다. ECS Fargate는 비용이 높지만 운영 부담을 줄이고, JWT는 다양한 위험에 대응해야 하고 비교적 복잡하지만 확장성이 뛰어납니다. 단순히 성능이나 비용 하나만 보는 것이 아니라, 현재 요구사항과 미래 확장성의 균형을 고려하는 의사결정 능력을 기를 수 있었습니다.\n     \n또한 점진적 개선의 가치를 체감했습니다. EC2 → ECS Fargate로 이어지는 인프라 진화뿐만 아니라, 기본 구조 → 성능 최적화 → 비용 효율화 → 모니터링까지 단계적으로 확장하며, 처음부터 이론적 완벽함을 추구하기보다 작은 단계부터라도 일단 배포를 하고 각 단계에서 문제점을 찾고 개선하는 것이 더 견고한 시스템을 만든다는 것을 배웠습니다.\n     \n",
+              "byteSize": 13856
+            },
+            "defaultBranchRef": {
+              "name": "develop",
+              "target": {
+                "history": {
+                  "totalCount": 57,
+                  "edges": [
+                    {
+                      "node": {
+                        "oid": "8497d8324d39646468501eb205bf6182dd9bd9ea",
+                        "committedDate": "2025-12-09T05:18:35Z",
+                        "message": "docs: README 오타 및 문맥 수정\n\n- 오타 및 자잘한 어휘, 문장 구조 수정",
+                        "additions": 18,
+                        "deletions": 16,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-12-09T14:18:35+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "b2d439dd55c3897fe8ff4dbcfdbdb76094f37a68",
+                        "committedDate": "2025-12-09T01:11:31Z",
+                        "message": "docs: README with project features and challenges\n\nRefine project details and technical challenges in README.",
+                        "additions": 28,
+                        "deletions": 11,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-12-09T10:11:31+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "c44575e2933f419fbec2979595e07501f3aa4eae",
+                        "committedDate": "2025-12-07T13:33:01Z",
+                        "message": "Enhance README with project structure and features\n\n- 주요 기능 간략히 추가\r\n- 기술적 도전과 해결(트러블슈팅) 추가\r\n- TODO: 프로젝트 회고 작성\r\n- TODO: 주요 기능 보완",
+                        "additions": 207,
+                        "deletions": 3,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-12-07T22:33:01+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "20d261949e0459ea1c47d3fbf09b0a63c6fb174c",
+                        "committedDate": "2025-12-07T04:49:13Z",
+                        "message": "초기 README.md 구성 작성\n\n- TODO: 프로젝트 폴더 구조 이후 작성 예정.",
+                        "additions": 51,
+                        "deletions": 1,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-12-07T13:49:13+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "d315d10be4153c41aff726df616e67454dc63a71",
+                        "committedDate": "2025-12-06T12:34:13Z",
+                        "message": "test: ECS Fargate 롤링 배포 테스트 (v1.3)",
+                        "additions": 1,
+                        "deletions": 1,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-12-06T21:34:13+09:00"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "3-james-kim-community-FE",
+            "description": null,
+            "createdAt": "2025-10-14T06:10:53Z",
+            "updatedAt": "2025-12-09T00:25:42Z",
+            "stargazerCount": 0,
+            "forkCount": 0,
+            "isArchived": false,
+            "isFork": false,
+            "primaryLanguage": {
+              "name": "JavaScript",
+              "color": "#f1e05a"
+            },
+            "languages": {
+              "totalSize": 213584,
+              "edges": [
+                {
+                  "size": 125806,
+                  "node": {
+                    "name": "JavaScript",
+                    "color": "#f1e05a"
+                  }
+                },
+                {
+                  "size": 54075,
+                  "node": {
+                    "name": "CSS",
+                    "color": "#663399"
+                  }
+                },
+                {
+                  "size": 33094,
+                  "node": {
+                    "name": "HTML",
+                    "color": "#e34c26"
+                  }
+                },
+                {
+                  "size": 609,
+                  "node": {
+                    "name": "Dockerfile",
+                    "color": "#384d54"
+                  }
+                }
+              ]
+            },
+            "readme": {
+              "text": "# 📌 프로젝트명: 와글와글 커뮤니티 (WagleWagle Community)\n개인적인 고민부터 개발 이야기까지 자유롭게 소통할 수 있는 커뮤니티 서비스입니다.\n본 프로젝트는 Vanilla JavaScript 기반의 프론트엔드 레포지토리로,\n초기 화면 설계부터 기능 구현, 백엔드 연동까지 모든 개발 과정을 직접 수행하였습니다.\n\n---\n\n\n## 📅 개발 인원 및 기간\n- 개발 기간 : 2025-09 ~ 2025-11 \n- 개발 인원 : 1인 (프론트엔드 & 백엔드 전체 개발)\n\n<br/>\n   \n## 사용 기술 및 tools\n- HTML / CSS, Vanilla JavaScript\n- Express.js (정적 리소스 서빙 및 라우팅)\n\n<br/>\n\n## 관련 링크\n- [백엔드 레포지토리](https://github.com/100-hours-a-week/3-james-kim-community-BE)\n- [서비스 데모영상](https://drive.google.com/file/d/1QRmcLbqeb0l4wt5sW-tfE6V8EwNk_P0A/view?usp=sharing)\n\n<br/>\n\n## 폴더 구조\n<details>\n<summary>📁 폴더 구조 보기 / 접기</summary>\n   \n```\n├── app.js                 # Express 서버 진입점\n├── package.json\n├── package-lock.json\n├── Dockerfile\n├── .gitignore\n├── .dockerignore\n└── public\n    ├── index.html           # 랜딩 페이지\n    ├── pages                # HTML 페이지들\n    │   ├── login.html\n    │   ├── post-detail.html\n    │   ├── post-write.html\n    │   ├── post-edit.html\n    │   ├── edit-profile.html\n    │   └── change-password.html\n    ├── js                   # JavaScript 모듈\n    │   ├── pages           # 페이지별 로직\n    │   │   ├── auth.js\n    │   │   ├── login.js\n    │   │   ├── signup.js\n    │   │   ├── posts.js\n    │   │   ├── post-detail.js\n    │   │   ├── post-write.js\n    │   │   ├── post-edit.js\n    │   │   ├── edit-profile.js\n    │   │   └── change-password.js\n    │   ├── services        # API 통신 레이어\n    │   │   ├── authService.js\n    │   │   ├── postService.js\n    │   │   ├── commentService.js\n    │   │   ├── imageService.js\n    │   │   └── userService.js\n    │   ├── utils           # 공통 유틸리티\n    │   │   ├── http.js\n    │   │   ├── validation.js\n    │   │   ├── storage.js\n    │   │   ├── errorHandler.js\n    │   │   └── imageHelper.js\n    │   └── components      # 재사용 컴포넌트\n    │       ├── header.js\n    │       ├── api.js\n    │       ├── loginPromptModal.js\n    │       └── profileDropdown.js\n    ├── css                 # 스타일시트\n    │   ├── common.css\n    │   ├── reset.css\n    │   ├── pages\n    │   │   ├── auth.css\n    │   │   ├── posts.css\n    │   │   ├── post-detail.css\n    │   │   ├── post-write.css\n    │   │   ├── post-edit.css\n    │   │   ├── edit-profile.css\n    │   │   └── change-password.css\n    │   └── components.css\n    │       ├── dropdown.js\n    │       ├── header.js\n    │       ├── loginPromptModal.js\n    │       └── modal.js\n    └── assets              # 정적 리소스\n        └── images\n            ├── logo.png\n            └── default-profile.png\n```\n</details>\n\n---\n\n## 서비스 화면\n| 비로그인 사용자 홈 | 비로그인 사용자 프로필 |로그인 사용자 홈/프로필 |\n| ---- | ---- | ---- |\n| <img src=\"https://github.com/user-attachments/assets/a2f4d9b6-e073-458f-bc77-920fe8e8bd57\" width=\"300\" height=\"450\" /> | <img src=\"https://github.com/user-attachments/assets/cd3fbe5a-5e42-4c5e-b4f4-1983eeaf887e\" width=\"300\" height=\"450\" /> | <img src=\"https://github.com/user-attachments/assets/bb8c5795-7a10-447d-a7fb-32803eda2e47\" width=\"300\" height=\"450\" /> |\n\n\n| 로그인 | 회원가입 | 이용약관 |\n|-------|----------| ----- |\n| <img src=\"https://github.com/user-attachments/assets/f91db4c6-6cb7-42d9-a9bd-177e4ae14d55\" width=\"300\" height=\"450\" /> | <img src=\"https://github.com/user-attachments/assets/b49fea70-946d-4788-81fc-820020d61376\" width=\"300\" height=\"450\" /> | <img src=\"https://github.com/user-attachments/assets/939b5ffe-6eb9-4848-839c-ffd31bd01d6b\" width=\"300\" height=\"450\" /> |\n\n| 게시글 작성 | 게시글 수정 | 게시글 삭제 |\n|-------|----------| ----- |\n| <img src=\"https://github.com/user-attachments/assets/58062784-fb2d-4f34-bba0-2a3c45d538d7\" width=\"300\" height=\"450\" /> | <img src=\"https://github.com/user-attachments/assets/d2ac7789-e55c-4e57-be80-2a7f445b634f\" width=\"300\" height=\"450\" /> | <img src=\"https://github.com/user-attachments/assets/10b9a659-5dd5-4243-bd13-356d2d9a2bc0\" width=\"300\" height=\"450\" /> |\n\n| 게시글 상세/좋아요 | 댓글 상세 | 댓글 수정/삭제 |\n|-------|----------| ----- |\n| <img src=\"https://github.com/user-attachments/assets/78479f4a-9462-4ec8-a68f-7d43a9d6c6cb\" width=\"300\" height=\"450\" /> | <img src=\"https://github.com/user-attachments/assets/07754f72-1476-4760-9916-16e57c75f410\" width=\"300\" height=\"450\" /> | <img src=\"https://github.com/user-attachments/assets/ced37dc5-2bbd-4f88-858d-330b90732df0\" width=\"300\" height=\"450\" /> |\n\n| 회원정보수정 | 비밀번호수정 |\n| --- |--- |\n| <img src=\"https://github.com/user-attachments/assets/bce37e56-326a-4a16-9239-81c497c2cc9b\" width=\"280\" height=\"450\" /> | <img src=\"https://github.com/user-attachments/assets/e670ac8a-6ee4-4d53-a49e-2f71f624b538\" width=\"280\" height=\"450\" /> | \n\n---\n\n## 주요 기능\n- 사용자 인증: JWT 기반 로그인/회원가입, 토큰 관리\n- 게시글 관리: 작성, 조회, 수정, 삭제, 좋아요 기능\n- 댓글 시스템: 댓글 작성, 수정, 삭제\n- 프로필 관리: 프로필 이미지 업로드, 닉네임 변경, 비밀번호 변경\n\n--- \n\n## 트러블 슈팅\n### 1️⃣ 프로젝트 구조화 및 관심사 분리\n문제: 초기에는 모든 로직이 HTML 내부 `<script>`에 몰려 있어 유지보수 어려움  \n해결:\n- 서비스 레이어(`services/`) 도입 → API 로직 분리\n- 유틸 모듈(`utils/`) 분리 → 중복 코드 제거\n- 페이지별 로직(`pages/`) 생성 → 역할 명확화\n- 프론트에서도 백엔드처럼 계층 구조를 적용하여 응집도 향상\n\n<br/>\n\n### 2️⃣ HTML/CSS/JS 로딩 순서 문제\n문제: JS가 DOM보다 먼저 실행되어 null reference 발생   \n해결: \n- `<script>`를 `<body>` 하단으로 이동\n- `DOMContentLoaded` 이벤트 적용\n- CSS 먼저 로드하여 FOUC 방지\n\n<br/>\n\n### 3️⃣ API 호출 중복 및 에러 처리 문제\n문제: fetch 중복, 토큰 관리 비일관적    \n해결:\n- http.js 공통 fetch 유틸 구현\n- JWT 자동 헤더 적용\n- 401 발생 시 자동 로그아웃 처리 로직 통합\n\n<br/>\n\n### 4️⃣ Express.js 사용 이유\n문제: 단순 정적 페이지라 Express가 과한가?   \n하지만 선택한 이유:\n- SSR 확장성 확보\n- 미들웨어(CORS, Logging, Compression) 활용 가능\n- 라우팅 유연성 우수\n- nginx와 조합하여 캐싱 및 배포 구조 최적화 가능\n\n---\n\n## 프로젝트 회고\n- Vanilla JS로 기본기 강화: DOM 조작, 이벤트, 비동기 처리의 본질을 깊게 이해\n- 실제 배포 환경 경험: nginx + EC2 기반 배포\n- 프레임워크의 필요성 체감: 상태 관리, 라우팅, 렌더링 등 프레임워크가 해결해주는 문제를 직접 경험\n- 확장 가능한 구조의 중요성 학습: 단순 기능 구현이 아닌 구조적 설계의 중요성 체감\n",
+              "byteSize": 7653
+            },
+            "defaultBranchRef": {
+              "name": "develop",
+              "target": {
+                "history": {
+                  "totalCount": 72,
+                  "edges": [
+                    {
+                      "node": {
+                        "oid": "d2f136bf8905e7e05740ef589994605e01758b69",
+                        "committedDate": "2025-12-09T00:25:39Z",
+                        "message": "Update README with folder structure details\n\nAdded folder structure section with collapsible details.",
+                        "additions": 4,
+                        "deletions": 0,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-12-09T09:25:39+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "23241f1e9efe058e881f1ff2c92b7e872377e01d",
+                        "committedDate": "2025-12-07T04:27:10Z",
+                        "message": "Initialize README with project overview and structure\n\nAdd project documentation and structure details to README",
+                        "additions": 171,
+                        "deletions": 0,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-12-07T13:27:10+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "1b110aaf4291bf7d1a9147b1ad886fd2d38645f0",
+                        "committedDate": "2025-12-06T13:00:13Z",
+                        "message": "test: 프론트 Blue/Green 배포 최종 테스트",
+                        "additions": 1,
+                        "deletions": 1,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-12-06T22:00:13+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "0b35de0519f4a199cdd3ddb36402dc73476a952e",
+                        "committedDate": "2025-12-06T12:30:24Z",
+                        "message": "test: 프론트 Blue/Green 배포 최종 테스트",
+                        "additions": 1,
+                        "deletions": 1,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-12-06T21:30:24+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "e19ca5bf6fe54e629ea9916e865cff7e62078371",
+                        "committedDate": "2025-12-06T12:09:50Z",
+                        "message": "test: 프론트 Blue/Green 배포 최종 테스트",
+                        "additions": 0,
+                        "deletions": 0,
+                        "changedFiles": 0,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-12-06T21:09:50+09:00"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "ci-practice",
+            "description": null,
+            "createdAt": "2025-11-24T04:25:52Z",
+            "updatedAt": "2025-11-25T07:42:39Z",
+            "stargazerCount": 0,
+            "forkCount": 0,
+            "isArchived": false,
+            "isFork": false,
+            "primaryLanguage": {
+              "name": "JavaScript",
+              "color": "#f1e05a"
+            },
+            "languages": {
+              "totalSize": 800,
+              "edges": [
+                {
+                  "size": 615,
+                  "node": {
+                    "name": "JavaScript",
+                    "color": "#f1e05a"
+                  }
+                },
+                {
+                  "size": 115,
+                  "node": {
+                    "name": "Dockerfile",
+                    "color": "#384d54"
+                  }
+                },
+                {
+                  "size": 70,
+                  "node": {
+                    "name": "Shell",
+                    "color": "#89e051"
+                  }
+                }
+              ]
+            },
+            "readme": null,
+            "defaultBranchRef": {
+              "name": "main",
+              "target": {
+                "history": {
+                  "totalCount": 8,
+                  "edges": [
+                    {
+                      "node": {
+                        "oid": "92011a7197cc3850f285ef0e29cb4a7e3879c1cd",
+                        "committedDate": "2025-11-25T07:42:31Z",
+                        "message": "fix: Jenkinsfile sysntax error2",
+                        "additions": 3,
+                        "deletions": 2,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-11-25T16:42:31+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "38da012f0fcc87d91c276390586ed6f08a490b6d",
+                        "committedDate": "2025-11-25T07:38:34Z",
+                        "message": "fix: Jenkinsfile sysntax error",
+                        "additions": 1,
+                        "deletions": 1,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-11-25T16:38:34+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "09c691107071a302960abfc159813e936710ebb2",
+                        "committedDate": "2025-11-25T07:35:06Z",
+                        "message": "feat: migrate Jenkins Freestyle to Pipeline",
+                        "additions": 53,
+                        "deletions": 0,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-11-25T16:35:06+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "4030e439d680571a021ce75e7d67a73d4936b488",
+                        "committedDate": "2025-11-25T06:47:57Z",
+                        "message": "chore: Initial Jenkins",
+                        "additions": 4,
+                        "deletions": 0,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-11-25T15:47:57+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "affb30826b20f622309e71e63628e83ab11e15b7",
+                        "committedDate": "2025-11-24T06:28:38Z",
+                        "message": "fix: ci-cd test code",
+                        "additions": 5,
+                        "deletions": 5,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-11-24T15:28:38+09:00"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "3-james-kim-til",
+            "description": null,
+            "createdAt": "2025-10-14T06:09:14Z",
+            "updatedAt": "2025-11-20T09:55:11Z",
+            "stargazerCount": 0,
+            "forkCount": 0,
+            "isArchived": false,
+            "isFork": false,
+            "primaryLanguage": null,
+            "languages": {
+              "totalSize": 0,
+              "edges": []
+            },
+            "readme": {
+              "text": "# Today I Learn  \n\n\n### [Nov week3]  \n☑️ [25.11.20] TIL - [Docker Volume, Bridge Network, Reverse Proxy](https://github.com/100-hours-a-week/3-james-kim-til/blob/cca6554b40c77c21251656b3dafa4b50c1110a8e/Nov/Docker%3A%20Volume%2C%20Bridge%20Network%2C%20Reverse%20Proxy.md)   \n☑️ [25.11.19] TIL - [Docker Basic](https://github.com/100-hours-a-week/3-james-kim-til/blob/77ae3c599ccf95577fbc61ee0394cfe4da386a43/Nov/Docker%20Basic.md)  \n\n### [Nov week2]  \n☑️ [25.11.10] TIL - [AWS 네트워크와 제어](https://github.com/100-hours-a-week/3-james-kim-til/blob/506bbbc1b3803e16cc511c0c9786f30cc376ab1c/Nov/AWS%20%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC%EC%99%80%20%EC%A0%9C%EC%96%B4.md)\n\n### [Nov week1]\n☑️ [25.11.04] TIL - [Network Fundamentals](https://github.com/100-hours-a-week/3-james-kim-til/blob/d60dba28410606d10cdaadab7aa3f9bcfa20009a/Nov/Network%20Fundamentals.md)  \n☑️ [25.11.02] TIL - [JWT 토큰 탈취와 대안](https://github.com/100-hours-a-week/3-james-kim-til/blob/91b493847c8adaef23dc40ecc0d0a221099b04c4/Nov/JWT%20%ED%86%A0%ED%81%B0%20%ED%83%88%EC%B7%A8.md)\n\n### [Oct week5]\n☑️ [25.10.29] TIL - [Filter&Interceptor](https://github.com/100-hours-a-week/3-james-kim-til/blob/da9b7cb1c1edf0ac4bcc0a24fe8caed2daac306c/Oct/%5B25.10.29%5D%20Filter%26Interceptor.md)  \n☑️ [25.10.27] TIL - [JWT](https://github.com/100-hours-a-week/3-james-kim-til/blob/0876cd0d9b162b87adee6278a8527f89ec45a044/Oct/%5B25.10.27%5D%20JWT.md)\n\n### [Oct week4]\n☑️ [25.10.21] TIL - [TestCode](https://github.com/100-hours-a-week/james-til/blob/87554f7a588ae5b34b767357cecb5583d87e65c9/Oct/%5B25.10.21%5D%20TestCode.md)  \n☑️ [25.10.20] TIL - [Thymeleaf](https://github.com/100-hours-a-week/james-til/blob/d4d7b6f0e811acdc711487340746dbd2abb3ae1c/Oct/%5B25.10.20%5D%20Thymeleaf.md)  \n☑️ [25.10.19] TIL - [HTML 구조와 시맨틱 태그](https://github.com/100-hours-a-week/james-til/blob/eb9b4d640623f55f8cce148096d99fed2e5f0d1c/Oct/%5B25.10.19%5D%20Frontend%20Fundamentals.md)\n",
+              "byteSize": 2003
+            },
+            "defaultBranchRef": {
+              "name": "main",
+              "target": {
+                "history": {
+                  "totalCount": 25,
+                  "edges": [
+                    {
+                      "node": {
+                        "oid": "47e50653500c84e21796175e3253d215ac84ca99",
+                        "committedDate": "2025-11-20T09:55:07Z",
+                        "message": "Update README.md with TIL entry",
+                        "additions": 1,
+                        "deletions": 0,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-11-20T18:55:07+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "cca6554b40c77c21251656b3dafa4b50c1110a8e",
+                        "committedDate": "2025-11-20T09:53:27Z",
+                        "message": "add TIL[25.11.20] Docker in Nov",
+                        "additions": 255,
+                        "deletions": 0,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-11-20T18:53:27+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "8af69ae912605e3b9d6bda127f0c328e0b739943",
+                        "committedDate": "2025-11-19T06:34:29Z",
+                        "message": "Update README.md with TIL entry\n\nAdded new TIL entry for Docker Basic.",
+                        "additions": 5,
+                        "deletions": 1,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-11-19T15:34:29+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "77ae3c599ccf95577fbc61ee0394cfe4da386a43",
+                        "committedDate": "2025-11-19T06:33:21Z",
+                        "message": "add TIL[25.11.19] Docker Basic in Nov",
+                        "additions": 133,
+                        "deletions": 0,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-11-19T15:33:21+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "7e124b921b2166bbe80dc0b4ff76c4933f03a354",
+                        "committedDate": "2025-11-10T10:21:57Z",
+                        "message": "Update README.md with TIL entry",
+                        "additions": 3,
+                        "deletions": 0,
+                        "changedFiles": 1,
+                        "author": {
+                          "name": "Jongmin Kim",
+                          "email": "jmkim990226@gmail.com",
+                          "date": "2025-11-10T19:21:57+09:00"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "java-lotto-8",
+            "description": null,
+            "createdAt": "2025-11-02T04:59:59Z",
+            "updatedAt": "2025-11-02T04:59:59Z",
+            "stargazerCount": 0,
+            "forkCount": 0,
+            "isArchived": false,
+            "isFork": true,
+            "primaryLanguage": {
+              "name": "Java",
+              "color": "#b07219"
+            },
+            "languages": {
+              "totalSize": 3715,
+              "edges": [
+                {
+                  "size": 3715,
+                  "node": {
+                    "name": "Java",
+                    "color": "#b07219"
+                  }
+                }
+              ]
+            },
+            "readme": {
+              "text": "# java-lotto-precourse\n",
+              "byteSize": 23
+            },
+            "defaultBranchRef": {
+              "name": "main",
+              "target": {
+                "history": {
+                  "totalCount": 2,
+                  "edges": [
+                    {
+                      "node": {
+                        "oid": "45f688abfdd72879d78271f7d217266b62e51d1e",
+                        "committedDate": "2025-09-19T02:08:49Z",
+                        "message": "build: upgrade Gradle versions",
+                        "additions": 8,
+                        "deletions": 4,
+                        "changedFiles": 4,
+                        "author": {
+                          "name": "jaeyeonling",
+                          "email": "jaeyeonling@gmail.com",
+                          "date": "2025-09-19T11:08:49+09:00"
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "oid": "99b196479883400e460aec0c89ca28e4cdd34549",
+                        "committedDate": "2024-10-29T05:56:48Z",
+                        "message": "feat: setup project",
+                        "additions": 526,
+                        "deletions": 0,
+                        "changedFiles": 12,
+                        "author": {
+                          "name": "jaeyeonling",
+                          "email": "jaeyeonling@gmail.com",
+                          "date": "2024-10-29T14:56:48+09:00"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      "contributionsCollection": {
+        "totalCommitContributions": 334,
+        "totalIssueContributions": 0,
+        "totalPullRequestContributions": 14,
+        "totalPullRequestReviewContributions": 0,
+        "totalRepositoryContributions": 14,
+        "restrictedContributionsCount": 0,
+        "contributionCalendar": {
+          "totalContributions": 362,
+          "weeks": [
+            {
+              "contributionDays": [
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-15",
+                  "weekday": 0,
+                  "color": "#ebedf0"
+                },
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-16",
+                  "weekday": 1,
+                  "color": "#ebedf0"
+                },
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-17",
+                  "weekday": 2,
+                  "color": "#ebedf0"
+                },
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-18",
+                  "weekday": 3,
+                  "color": "#ebedf0"
+                },
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-19",
+                  "weekday": 4,
+                  "color": "#ebedf0"
+                },
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-20",
+                  "weekday": 5,
+                  "color": "#ebedf0"
+                },
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-21",
+                  "weekday": 6,
+                  "color": "#ebedf0"
+                }
+              ]
+            },
+            {
+              "contributionDays": [
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-22",
+                  "weekday": 0,
+                  "color": "#ebedf0"
+                },
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-23",
+                  "weekday": 1,
+                  "color": "#ebedf0"
+                },
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-24",
+                  "weekday": 2,
+                  "color": "#ebedf0"
+                },
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-25",
+                  "weekday": 3,
+                  "color": "#ebedf0"
+                },
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-26",
+                  "weekday": 4,
+                  "color": "#ebedf0"
+                },
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-27",
+                  "weekday": 5,
+                  "color": "#ebedf0"
+                },
+                {
+                  "contributionCount": 0,
+                  "date": "2024-12-28",
+                  "weekday": 6,
+                  "color": "#ebedf0"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "issues": {
+        "totalCount": 0,
+        "nodes": []
+      },
+      "pullRequests": {
+        "totalCount": 14,
+        "nodes": [
+          {
+            "title": "feat: add RedisConfig Sentinel",
+            "createdAt": "2025-12-11T10:11:25Z",
+            "closedAt": "2025-12-11T10:12:26Z",
+            "mergedAt": "2025-12-11T10:12:26Z",
+            "state": "MERGED",
+            "url": "https://github.com/kakaoboot-19/19-load-test/pull/9",
+            "additions": 63,
+            "deletions": 15,
+            "changedFiles": 1,
+            "comments": {
+              "totalCount": 0
+            },
+            "reviews": {
+              "totalCount": 0
+            }
+          },
+          {
+            "title": "\"feat: s3 방식 추가 구현",
+            "createdAt": "2025-11-13T08:17:18Z",
+            "closedAt": "2025-11-13T08:17:34Z",
+            "mergedAt": "2025-11-13T08:17:34Z",
+            "state": "MERGED",
+            "url": "https://github.com/100-hours-a-week/3-james-kim-community-BE/pull/1",
+            "additions": 633,
+            "deletions": 198,
+            "changedFiles": 12,
+            "comments": {
+              "totalCount": 0
+            },
+            "reviews": {
+              "totalCount": 0
+            }
+          },
+          {
+            "title": "[로또] 김종민 미션 제출합니다.",
+            "createdAt": "2025-11-02T07:22:16Z",
+            "closedAt": null,
+            "mergedAt": null,
+            "state": "OPEN",
+            "url": "https://github.com/woowacourse-precourse/java-lotto-8/pull/93",
+            "additions": 760,
+            "deletions": 3,
+            "changedFiles": 15,
+            "comments": {
+              "totalCount": 0
+            },
+            "reviews": {
+              "totalCount": 0
+            }
+          },
+          {
+            "title": "[자동차 경주] 김종민 미션 제출합니다.",
+            "createdAt": "2025-10-26T11:42:53Z",
+            "closedAt": null,
+            "mergedAt": null,
+            "state": "OPEN",
+            "url": "https://github.com/woowacourse-precourse/java-racingcar-8/pull/235",
+            "additions": 444,
+            "deletions": 11,
+            "changedFiles": 6,
+            "comments": {
+              "totalCount": 0
+            },
+            "reviews": {
+              "totalCount": 0
+            }
+          },
+          {
+            "title": "[문자열 덧셈 계산기] 김종민 미션 제출합니다.",
+            "createdAt": "2025-10-19T11:41:06Z",
+            "closedAt": null,
+            "mergedAt": null,
+            "state": "OPEN",
+            "url": "https://github.com/woowacourse-precourse/java-calculator-8/pull/460",
+            "additions": 166,
+            "deletions": 2,
+            "changedFiles": 4,
+            "comments": {
+              "totalCount": 0
+            },
+            "reviews": {
+              "totalCount": 0
+            }
+          }
+        ]
+      },
+      "gists": {
+        "totalCount": 0,
+        "nodes": []
+      },
+      "starredRepositories": {
+        "totalCount": 0
+      },
+      "watching": {
+        "totalCount": 2
+      }
+    },
+    "rateLimit": {
+      "limit": 5000,
+      "remaining": 4999,
+      "resetAt": "2025-12-17T06:27:09Z"
+    }
+  }
+}
