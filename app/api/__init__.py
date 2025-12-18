@@ -113,7 +113,7 @@ async def create_gitbti(req: GitBTIRequest):
 
         
         # 2. AI 분석 + 이미지 생성 (demo.py 로직)
-        ai_image = generate_image(prompt_result['image_prompt'])
+        ai_image = generate_image(prompt_result['image_prompt_content'])
         print("2️⃣ AI 분석 및 이미지 생성 중...")
        
         # 3. S3 업로드
@@ -178,7 +178,7 @@ async def process_single_user(username: str) -> dict:
         prompt_result = await asyncio.to_thread(prompt_generator, data_result)
 
         # 4. 이미지 생성 (동기 → 비동기)
-        ai_image = await asyncio.to_thread(generate_image, prompt_result['image_prompt'])
+        ai_image = await asyncio.to_thread(generate_image, prompt_result['image_prompt_content'])
 
         # 5. S3 업로드 (이미 async)
         s3_result = await s3_service.upload_pil_image(
@@ -191,7 +191,8 @@ async def process_single_user(username: str) -> dict:
         return {
             "username": username,
             "type": prompt_result["type"],
-            "role": prompt_result["role"],
+            "role_en": prompt_result["role_en"],
+            "role_kr": prompt_result["role_kr"],
             "description": prompt_result["description"],
             "image_url": s3_result["image_url"],
             "stats": prompt_result["stats"]
@@ -230,13 +231,14 @@ async def create_gitbti_batch(req: GitBTIBatchRequest):
             UserGitBTIResult(
                 username=result["username"],
                 role=RoleData(
-                    role=result["role"],
+                    role=result["role_en"],
+                    roleKr=result["role_kr"],
                     type=result["type"],
                     description=result["description"]
                 ),
                 image=ImageData(
                     url=result["image_url"],
-                    description="Git-BTI 캐릭터 이미지"
+                    description=result["description"]
                 ),
                 stats=StatsData(
                     dayVsNight=result["stats"]["dayVsNight"],

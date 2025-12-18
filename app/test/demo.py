@@ -160,6 +160,7 @@ def generate_image(prompt: str):
     """HuggingFace API를 사용하여 이미지 생성"""
     API_URL = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell"
     API_TOKEN = os.getenv("HF_API")
+    style_prompt = "low resolution pixel art, 8-bit style sprite, Chibi pixel art, Big head small body, cute proportions, retro 1980s game graphics,Chunky pixels, Limited color palette, Simple shapes, background color code is rgba(245, 235, 210, 1),"
 
     if not API_TOKEN:
         raise RuntimeError("HF_API environment variable not set")
@@ -169,10 +170,12 @@ def generate_image(prompt: str):
         "Content-Type": "application/json"
     }
 
+    final_prompt = f'{style_prompt},{prompt}'
+
     response = requests.post(
         API_URL,
         headers=headers,
-        json={"inputs": prompt},
+        json={"inputs": final_prompt},
         timeout=120
     )
 
