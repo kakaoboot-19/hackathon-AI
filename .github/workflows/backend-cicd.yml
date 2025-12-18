@@ -3,7 +3,7 @@ name: FastAPI Docker Deploy to EC2
 on:
   push:
     branches:
-      - feature/test
+      - feature/testcodeV2
 
 jobs:
   build: # Docker Image Build & Push
