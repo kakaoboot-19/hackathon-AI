@@ -60,36 +60,54 @@ async def create_gitbti(req: GitBTIRequest):
         # 1. GitHub 데이터 수집
         github_data = get_github_data(req.username)
         
-        # 2. AI 분석
-        gitbti_result = analyze_gitbti(github_data)
+        # # 2. AI 분석
+        # gitbti_result = analyze_gitbti(github_data)
         
-        # 3. 이미지 생성
-        image_bytes = generate_image(gitbti_result)
+        # # 3. 이미지 생성
+        # image_bytes = generate_image(gitbti_result)
         
-        # 4. S3 업로드
-        image_url = upload_to_s3(
-            image_bytes=image_bytes,
-            username=req.username,
-            gitbti_type=gitbti_result["type"]
+        # # 4. S3 업로드
+        # image_url = upload_to_s3(
+        #     image_bytes=image_bytes,
+        #     username=req.username,
+        #     gitbti_type=gitbti_result["type"]
+        # )
+
+        # AI 모델이 이미지 생성했다고 가정
+        # (실제로는: ai_image = stable_diffusion.generate(prompt))
+        ai_image = Image.new('RGB', (512, 512), color='#667eea')
+        draw = ImageDraw.Draw(ai_image)
+        draw.text((200, 250), "Test Image", fill='white')
+
+        # S3에 업로드 (이게 전부!)
+        result = await s3_service.upload_pil_image(
+            pil_image=ai_image,
+            image_format="PNG"
         )
+
+        print("✅ S3 업로드 완료!")
+        print(f"   URL: {result['image_url']}")
+        print(f"   Key: {result['file_key']}")
+
+        return result
         
         # 5. 프론트 형식으로 응답
-        return GitBTIResponse(
-            role=RoleData(
-                type=gitbti_result["type"],
-                description=gitbti_result["description"]
-            ),
-            image=ImageData(
-                url=image_url,
-                description=gitbti_result.get("image_description", "Git-BTI 캐릭터 이미지")
-            ),
-            stats=StatsData(
-                dayVsNight=gitbti_result["stats"]["dayVsNight"],
-                steadyVsBurst=gitbti_result["stats"]["steadyVsBurst"],
-                indieVsCrew=gitbti_result["stats"]["indieVsCrew"],
-                specialVsGeneral=gitbti_result["stats"]["specialVsGeneral"]
-            )
-        )
+        # return GitBTIResponse(
+        #     role=RoleData(
+        #         type=gitbti_result["type"],
+        #         description=gitbti_result["description"]
+        #     ),
+        #     image=ImageData(
+        #         url=image_url,
+        #         description=gitbti_result.get("image_description", "Git-BTI 캐릭터 이미지")
+        #     ),
+        #     stats=StatsData(
+        #         dayVsNight=gitbti_result["stats"]["dayVsNight"],
+        #         steadyVsBurst=gitbti_result["stats"]["steadyVsBurst"],
+        #         indieVsCrew=gitbti_result["stats"]["indieVsCrew"],
+        #         specialVsGeneral=gitbti_result["stats"]["specialVsGeneral"]
+        #     )
+        # )
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
