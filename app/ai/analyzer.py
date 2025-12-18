@@ -4,12 +4,13 @@ from collections import defaultdict
 
 
 ## graphql로 받은 json 가져오는 부분 필요
-def analyzer():
+def analyzer(graphql_data):
     commit_hours = []
     commit_messages = []
     additions = []
     deletions = []
     
+    user_name = graphql_data['data']['user']['login']
     coll = graphql_data['data']['user']['contributionsCollection']
     repos = graphql_data['data']['user']['repositories']['nodes']
     
@@ -45,9 +46,10 @@ def analyzer():
     print(f'work_time : {language_concentration}')
 
     return {
+        'user_name': user_name,
         'work_time' : work_time,
-        'commit_style' : commit style
-        'social_style' : social_style
+        'commit_style' : commit_style,
+        'social_style' : social_style,
         'language_concentration' : language_concentration
     }
 
