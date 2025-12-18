@@ -82,5 +82,5 @@ jobs:
             # 이전 이미지 정리 (최신 3개 버전만 유지)
             docker images ${IMAGE_NAME} --format "{{.Tag}}" | \
               grep -v "latest" | \
-              tail -n +4 | \
+              tail -n +6 | \
               xargs -r -I {} docker rmi ${IMAGE_NAME}:{} || true

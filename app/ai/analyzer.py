@@ -40,10 +40,10 @@ def analyzer(graphql_data):
     social_style = analyze_social_style_percent(coll)
     language_concentration = analyze_entropy_concentration(repos)
     
-    print(f'work_time : f"{work_time['trait']} 성향이 {work_time['percent']:.0f}% 입니다."')
-    print(f'commit_style : f"{commit_style['trait']} 성향이 {commit_style['percent']:.0f}% 입니다."')
-    print(f'social_style : f"{social_style['trait']} 성향이 {social_style['percent']:.0f}% 입니다."')
-    print(f'language_concentration : f"{language_concentration['trait']} 성향이 {language_concentration['percent']:.0f}% 입니다."')
+    print(f"work_time : {work_time['trait']} 성향이 {work_time['percent']:.0f}% 입니다.")
+    print(f"commit_style : {commit_style['trait']} 성향이 {commit_style['percent']:.0f}% 입니다.")
+    print(f"social_style : {social_style['trait']} 성향이 {social_style['percent']:.0f}% 입니다.")
+    print(f"language_concentration : {language_concentration['trait']} 성향이 {language_concentration['percent']:.0f}% 입니다.")
 
 
     return {
@@ -118,13 +118,13 @@ def analyze_work_style(additions,deletions):
 def analyze_social_style_percent(coll):
     
     # 1. Indie 활동 (Coding)
-    commits = collection['totalCommitContributions']
-    
+    commits = coll['totalCommitContributions']
+
     # 2. Team 활동 (Socializing)
     # PR은 혼자 할 수도 있지만, GitHub에서는 보통 협업의 시작으로 봅니다.
-    reviews = collection['totalPullRequestReviewContributions']
-    issues = collection['totalIssueContributions']
-    prs = collection['totalPullRequestContributions']
+    reviews = coll['totalPullRequestReviewContributions']
+    issues = coll['totalIssueContributions']
+    prs = coll['totalPullRequestContributions']
     
     team_actions = reviews + issues + prs
     total_actions = commits + team_actions

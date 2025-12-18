@@ -85,11 +85,11 @@ def prompt_generator(result):
 
     try:
         # --- B. Gemini에게 요청 ---
-        response = genai.GenerativeModel.generate_content(
-            model="gemini-2.5-flash",
-            contents=filled_prompt,
-            config=genai.types.GenerateContentConfig(
-                response_mime_type="application/json" # ★ 핵심: Gemini에게 JSON만 뱉으라고 강제함
+        model = genai.GenerativeModel("gemini-2.0-flash-exp")
+        response = model.generate_content(
+            filled_prompt,
+            generation_config=genai.types.GenerationConfig(
+                response_mime_type="application/json"
             )
         )
 

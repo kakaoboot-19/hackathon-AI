@@ -1,5 +1,5 @@
 # ========== Builder Stage ==========
-FROM python:3.13.9 as builder
+FROM python:3.11-slim as builder
 
 WORKDIR /code
 
@@ -9,12 +9,12 @@ RUN pip install --no-cache-dir -r /code/requirement.txt
 
 
 # ========== Runtime Stage ==========
-FROM python:3.13.9
+FROM python:3.11-slim
 
 WORKDIR /code
 
 # 설치된 패키지만 복사
-COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # 앱 코드 복사

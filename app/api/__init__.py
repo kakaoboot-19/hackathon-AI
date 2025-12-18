@@ -93,7 +93,7 @@ async def create_gitbti(req: GitBTIRequest):
         )
 
         print("✅ 완료!")
-        print(f"   Git-BTI 타입: {prompt_result["type"]}")
+        print(f"   Git-BTI 타입: {prompt_result['type']}")
         print(f"   이미지 URL: {s3_result['image_url']}")
 
         # 4. 프론트 형식으로 응답
