@@ -40,10 +40,11 @@ def analyzer(graphql_data):
     social_style = analyze_social_style_percent(coll)
     language_concentration = analyze_entropy_concentration(repos)
     
-    print(f'work_time : {work_time}')
-    print(f'work_time : {commit_style}')
-    print(f'work_time : {social_style }')
-    print(f'work_time : {language_concentration}')
+    print(f'work_time : f"{work_time['trait']} 성향이 {work_time['percent']:.0f}% 입니다."')
+    print(f'commit_style : f"{commit_style['trait']} 성향이 {commit_style['percent']:.0f}% 입니다."')
+    print(f'social_style : f"{social_style['trait']} 성향이 {social_style['percent']:.0f}% 입니다."')
+    print(f'language_concentration : f"{language_concentration['trait']} 성향이 {language_concentration['percent']:.0f}% 입니다."')
+
 
     return {
         'user_name': user_name,
@@ -79,8 +80,7 @@ def get_time_type(commit_timestamps):
 
     return {
         "trait": main_trait,      
-        "percent": round(main_percent), 
-        "description": f"{main_trait} 성향이 {main_percent:.0f}% 입니다."
+        "percent": round(main_percent)
     }
 
 #커밋 style
@@ -105,7 +105,7 @@ def analyze_work_style(additions,deletions):
     # 3. 성향 결정 (과반수 기준)
     # Bulk가 50% 이상이면 Bulk 타입, 아니면 Atom 타입
     main_trait = "Bulk" if bulk_percent >= 50 else "Atom"
-    main_percent = bulk_percent if main_trait == "Bulk" else atom_percent
+    main_percent = bulk_percent if main_trait == "Bulk" else (100 - bulk_percent)
     
     return {
         "trait": main_trait,          
@@ -117,13 +117,13 @@ def analyze_work_style(additions,deletions):
 def analyze_social_style_percent(collection):
     
     # 1. Indie 활동 (Coding)
-    commits = coll['totalCommitContributions']
+    commits = collection['totalCommitContributions']
     
     # 2. Team 활동 (Socializing)
     # PR은 혼자 할 수도 있지만, GitHub에서는 보통 협업의 시작으로 봅니다.
-    reviews = coll['totalPullRequestReviewContributions']
-    issues = coll['totalIssueContributions']
-    prs = coll['totalPullRequestContributions']
+    reviews = collection['totalPullRequestReviewContributions']
+    issues = collection['totalIssueContributions']
+    prs = collection['totalPullRequestContributions']
     
     team_actions = reviews + issues + prs
     total_actions = commits + team_actions
@@ -143,8 +143,7 @@ def analyze_social_style_percent(collection):
     
     return {
         "trait": main_trait,
-        "percent": round(main_percent), 
-        "description": f"{main_trait} 성향이 {main_percent:.0f}% 입니다."
+        "percent": round(main_percent)
     }
 
 
@@ -215,6 +214,5 @@ def analyze_entropy_concentration(nodes):
     return {
         "trait": main_trait,
         "percent": round(main_percent), 
-        "description": f"{main_trait} 성향이 {main_percent:.0f}% 입니다.",
         "top_languages": top_languages
     }

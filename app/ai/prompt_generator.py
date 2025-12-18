@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 import json
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -53,8 +52,19 @@ system_prompt = """
 
 def prompt_generator(result):
 
+    """
+    prompt_generator의 Docstring
+    
+    :param result: 
+    work_time : {'train': 'Day', 'percent': 61, 'description': 'Day 성향이 61% 입니다.'}
+    commit_style : {'trait': 'Bulk', 'percent': 52, 'description': 'Bulk 성향이 52% 입니다.'}
+    social_style : {'trait': 'Crew', 'percent': 75, 'description': 'Crew 성향이 75% 입니다.'}
+    language_concentration: {'trait': 'Specialist', 'percent': 51, 'description': 'Specialist 성향이 51% 입니다.', 'top_languages': [{'name': 'HTML', 'percent': 66.3}, {'name': 'Kotlin', 'percent': 14.1}, {'name': 'Java', 'percent': 13.5}]}
+
+    """
+
     load_dotenv()
-    client = genai.Client(api_key=GEMINI_API_KEY)
+    genai.configure(api_key=GEMINI_API_KEY)
 
     # result로부터 유형 뽑기
     type_string = "".join([result[key]['trait'][0].upper() for key in TARGET])
@@ -75,17 +85,25 @@ def prompt_generator(result):
 
     try:
         # --- B. Gemini에게 요청 ---
-        response = client.models.generate_content(
-            model="gemini-2.5-flash", # 해커톤용 가성비 & 속도 최강 모델
+        response = genai.GenerativeModel.generate_content(
+            model="gemini-2.5-flash",
             contents=filled_prompt,
-            config=types.GenerateContentConfig(
+            config=genai.types.GenerateContentConfig(
                 response_mime_type="application/json" # ★ 핵심: Gemini에게 JSON만 뱉으라고 강제함
             )
         )
 
         # --- C. 결과 파싱 ---
-        # response.text에 이미 JSON 문자열이 들어있습니다.
         result_json = json.loads(response.text)
+
+        # --- D. stats 필드 추가 ---
+        result_json['stats'] = {
+            "dayVsNight": result['work_time']['percent'],
+            "steadyVsBurst": result['commit_style']['percent'],
+            "indieVsCrew": result['social_style']['percent'],
+            "specialVsGeneral": result['language_concentration']['percent']
+        }
+
         return result_json
 
     except Exception as e:
@@ -94,6 +112,12 @@ def prompt_generator(result):
         return {
             "role": "알 수 없는 모험가",
             "type": "NBIG",
+            "stats": {
+                "dayVsNight": result.get('work_time', {}).get('percent', 50),
+                "steadyVsBurst": result.get('commit_style', {}).get('percent', 50),
+                "indieVsCrew": result.get('social_style', {}).get('percent', 50),
+                "specialVsGeneral": result.get('language_concentration', {}).get('percent', 50)
+            },
             "description": "데이터를 불러오는 데 실패했습니다.",
             "image_prompt": "A pixel art glitch screen, error message style"
         }
