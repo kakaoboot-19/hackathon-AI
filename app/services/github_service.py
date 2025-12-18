@@ -1,6 +1,6 @@
 """GitHub API 서비스"""
 import requests
-from app.config import settings
+# from app.config import settings
 from app.ai.queries import GITHUB_QUERY
 
 
@@ -18,9 +18,11 @@ def get_github_data(username: str) -> dict:
         Exception: API 호출 실패 시
     """
     url = "https://api.github.com/graphql"
+
+    github_token = os.getenv("GITHUB_TOKEN", "")
     
     headers = {
-        "Authorization": f"Bearer {settings.GITHUB_TOKEN}",
+        "Authorization": f"Bearer {github_token}",
         "Content-Type": "application/json"
     }
     
