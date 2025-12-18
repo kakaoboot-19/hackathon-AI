@@ -1,0 +1,146 @@
+[
+  {
+    "type": "DACS",
+    "tags": ["낮", "꼼꼼", "크루", "전문"],
+    "role": {
+      "en": "High Priest of Order",
+      "kr": "율법의 고위 사제"
+    },
+    "description": "9 to 6, 완벽한 컨벤션, 칼 같은 코드 리뷰로 빛을 수호합니다."
+  },
+  {
+    "type": "DACG",
+    "tags": ["낮", "꼼꼼", "크루", "다양"],
+    "role": {
+      "en": "Agile Bard",
+      "kr": "광장의 음유시인"
+    },
+    "description": "다양한 언어의 활용으로 팀의 빈틈을 메우며, 매일매일 새로운 잔디를 심습니다."
+  },
+  {
+    "type": "DAIS",
+    "tags": ["낮", "꼼꼼", "인디", "전문"],
+    "role": {
+      "en": "Silent Monk",
+      "kr": "침묵의 수도승"
+    },
+    "description": "소란스러운 세상 등지고, 묵묵히 나만의 무공을 수련해 경지에 오릅니다."
+  },
+  {
+    "type": "DAIG",
+    "tags": ["낮", "꼼꼼", "인디", "다양"],
+    "role": {
+      "en": "Solar Spellsword",
+      "kr": "빛의 마검사"
+    },
+    "description": "검과 마법, 어느 하나 소홀히 하지 않고 해가 떠 있는 동안, 혼자서 모든 것을 베어 넘깁니다."
+  },
+  {
+    "type": "DBCS",
+    "tags": ["낮", "폭탄", "크루", "전문"],
+    "role": {
+      "en": "Daylight Paladin",
+      "kr": "태양의 성기사"
+    },
+    "description": "빛을 수호하는 거대한 방패와 랜스로 팀의 가장 어려운 문제를 돌파합니다."
+  },
+  {
+    "type": "DBCG",
+    "tags": ["낮", "폭탄", "크루", "다양"],
+    "role": {
+      "en": "Tactical Commander",
+      "kr": "전략 사령관"
+    },
+    "description": "전체 아키텍처를 꿰뚫고, 결정적인 순간에 거대한 기능을 배포하여 전황을 뒤집습니다."
+  },
+  {
+    "type": "DBIS",
+    "tags": ["낮", "폭탄", "인디", "전문"],
+    "role": {
+      "en": "Dwarven Master Smith",
+      "kr": "드워프 대장장이"
+    },
+    "description": "자신만의 대장간에서 뜨거운 풀무질로 뚝딱뚝딱 명검을 제작합니다."
+  },
+  {
+    "type": "DBIG",
+    "tags": ["낮", "폭탄", "인디", "다양"],
+    "role": {
+      "en": "Grand Druid",
+      "kr": "대자연의 드루이드"
+    },
+    "description": "다양한 생물을 다루며, 혼자서 순식간에 거대한 숲을 조성합니다."
+  },
+  {
+    "type": "NACS",
+    "tags": ["밤", "꼼꼼", "크루", "전문"],
+    "role": {
+      "en": "Moonlight Ranger",
+      "kr": "달빛의 레인저"
+    },
+    "description": "모두가 잠든 사이 어둠 속에서 팀을 위해 정찰하고, 한땀 한땀 픽셀 단위로 코드를 수정합니다."
+  },
+  {
+    "type": "NACG",
+    "tags": ["밤", "꼼꼼", "크루", "다양"],
+    "role": {
+      "en": "Shadow Rogue",
+      "kr": "그림자 도적"
+    },
+    "description": "은밀하게 움직이며 여러 도구를 사용합니다. 위기 상황을 조용히 해결하고 사라집니다."
+  },
+  {
+    "type": "NAIS",
+    "tags": ["밤", "꼼꼼", "인디", "전문"],
+    "role": {
+      "en": "Lonely Alchemist",
+      "kr": "고독한 연금술사"
+    },
+    "description": "이 코드가 금이 될 때까지, 밤새도록 실험 플라스크를 흔듭니다. 한 가지 재료의 진리를 탐구합니다."
+  },
+  {
+    "type": "NAIG",
+    "tags": ["밤", "꼼꼼", "인디", "다양"],
+    "role": {
+      "en": "Midnight Tinkerer",
+      "kr": "심야 식당 주인장"
+    },
+    "description": "다양한 재료로, 밤마다 혼자만의 레시피로 소소한 요리를 만듭니다."
+  },
+  {
+    "type": "NBCS",
+    "tags": ["밤", "폭탄", "크루", "전문"],
+    "role": {
+      "en": "Overclocked Warlock",
+      "kr": "폭주하는 흑마법사"
+    },
+    "description": "강력한 카페인을 대가로 하룻밤 만에 팀의 코어 로직을 소환합니다."
+  },
+  {
+    "type": "NBCG",
+    "tags": ["밤", "폭탄", "크루", "다양"],
+    "role": {
+      "en": "Abyssal Lord",
+      "kr": "심연의 군주"
+    },
+    "description": "밤의 군단을 지휘합니다. 어떤 무기든 다루며, 닥치는 대로 부수고 만들며 팀을 캐리합니다."
+  },
+  {
+    "type": "NBIS",
+    "tags": ["밤", "폭탄", "인디", "전문"],
+    "role": {
+      "en": "Phantom of the Code",
+      "kr": "팬텀 오브 코드"
+    },
+    "description": "그의 얼굴을 본 사람은 없지만, 아침이 되면 위대한 유산이 남겨져 있습니다."
+  },
+  {
+    "type": "NBIG",
+    "tags": ["밤", "폭탄", "인디", "다양"],
+    "role": {
+      "en": "Chaos Creator",
+      "kr": "혼돈의 파괴자"
+    },
+    "description": "의식의 흐름대로 모든 언어를 섭렵하며, 하룻밤 사이에 혼자서 서비스를 런칭합니다."
+  }
+]
