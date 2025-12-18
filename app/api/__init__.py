@@ -25,7 +25,8 @@ class GitBTIRequest(BaseModel):
 
 class RoleData(BaseModel):
     """역할 정보"""
-    role: str = Field(..., description="GitHub 사용자 이름")
+    role_en: str = Field(..., description="GitHub 사용자 이름 영어")
+    role_kr: str = Field(..., description="GitHub 사용자 이름 한글")
     type: str = Field(..., description="Git-BTI 타입 (예: NBFI)")
     description: str = Field(..., description="타입 설명")
 
@@ -132,7 +133,8 @@ async def create_gitbti(req: GitBTIRequest):
         # TODO: demo.py에서 percentage를 명확한 형식으로 리턴하도록 수정
         return GitBTIResponse(
             role=RoleData(
-                role=prompt_result["role"],
+                role_en=prompt_result["role_en"],
+                role_kr=prompt_result["role_kr"],
                 type=prompt_result["type"],
                 description=prompt_result["description"]
             ),
@@ -231,14 +233,14 @@ async def create_gitbti_batch(req: GitBTIBatchRequest):
             UserGitBTIResult(
                 username=result["username"],
                 role=RoleData(
-                    role=result["role_en"],
-                    roleKr=result["role_kr"],
+                    role_en=result["role_en"],
+                    role_kr=result["role_kr"],
                     type=result["type"],
                     description=result["description"]
                 ),
                 image=ImageData(
                     url=result["image_url"],
-                    description=result["description"]
+                    description="Git-BTI 캐릭터 이미지"
                 ),
                 stats=StatsData(
                     dayVsNight=result["stats"]["dayVsNight"],
