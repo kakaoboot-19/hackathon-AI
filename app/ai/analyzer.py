@@ -200,7 +200,7 @@ def analyze_entropy_concentration(nodes):
     
     # 5. 성향 판정
     main_trait = "Specialist" if specialist_percent >= 50 else "Generalist"
-    main_percent = specialist_percent if main_trait == "Specialist" else (1-specialist_percent)
+    main_percent = specialist_percent if main_trait == "Specialist" else (100-specialist_percent)
 
     # ✅ 6. Top 3 언어 추출
     top_3 = sorted(lang_stats.items(), key=lambda x: x[1], reverse=True)[:3]
