@@ -78,7 +78,7 @@ def get_time_type(commit_timestamps):
     main_percent = night_percent if main_trait == "Night" else (100 - night_percent)
 
     return {
-        "train": main_trait,      
+        "trait": main_trait,      
         "percent": round(main_percent), 
         "description": f"{main_trait} 성향이 {main_percent:.0f}% 입니다."
     }
