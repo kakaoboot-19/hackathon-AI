@@ -1,7 +1,10 @@
+
 """FastAPI 애플리케이션"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import router
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI(
     title="GitBTI API",
@@ -36,3 +39,4 @@ def root():
 def health():
     """헬스 체크"""
     return {"status": "healthy"}
+
