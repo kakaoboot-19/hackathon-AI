@@ -1,20 +1,40 @@
-# image_generator.py
-import torch
-from diffusers import FluxPipeline
+from PIL import Image
+from io import BytesIO
 
-def generate_image(prompt: str, model_name: str, output_path: str):
-    pipe = FluxPipeline.from_pretrained(
-        model_name,
-        torch_dtype=torch.bfloat16
+import os
+import requests
+
+API_URL = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell"
+API_TOKEN = os.getenv("HF_API")
+
+if not API_TOKEN:
+    raise RuntimeError("HF_TOKEN environment variable not set")
+
+headers = {
+    "Authorization": f"Bearer {API_TOKEN}",
+    "Content-Type": "application/json"
+}
+
+def generate_image(prompt: str, output_path: str):
+    response = requests.post(
+        API_URL,
+        headers=headers,
+        json={"inputs": prompt},
+        timeout=120
     )
-    pipe.enable_model_cpu_offload()
 
-    image = pipe(
-        prompt,
-        guidance_scale=0.0,
-        num_inference_steps=4,
-        max_sequence_length=256,
-        generator=torch.Generator("cpu").manual_seed(0)
-    ).images[0]
+    if response.status_code != 200:
+        raise RuntimeError(
+            f"HF API error {response.status_code}: {response.text}"
+        )
 
-    image.save(output_path)
+    content_type = response.headers.get("Content-Type", "")
+    if "image" not in content_type:
+        raise RuntimeError(
+            f"Unexpected response ({content_type}): {response.text}"
+        )
+
+    # 🔹 bytes → PIL Image
+    image = Image.open(BytesIO(response.content)).convert("RGB")
+
+    return image
