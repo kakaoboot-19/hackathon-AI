@@ -14,7 +14,7 @@ FROM python:3.13.9
 WORKDIR /code
 
 # 설치된 패키지만 복사
-COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # 앱 코드 복사
