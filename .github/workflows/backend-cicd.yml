@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+
 jobs:
   build: # Docker Image Build & Push
     runs-on: ubuntu-latest
