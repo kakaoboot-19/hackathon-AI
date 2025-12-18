@@ -2,9 +2,10 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from app.services.github_service import get_github_data
-from app.services.s3_service import upload_to_s3
-from app.ai.analyzer import analyze_gitbti
-from app.ai.image_generator import generate_image
+from app.services.s3_service import s3_service
+from PIL import Image, ImageDraw
+# from app.ai.analyzer import analyze_gitbti
+# from app.ai.image_generator import generate_image
 
 router = APIRouter()
 
@@ -79,7 +80,7 @@ async def create_gitbti(req: GitBTIRequest):
         draw = ImageDraw.Draw(ai_image)
         draw.text((200, 250), "Test Image", fill='white')
 
-        # S3에 업로드 (이게 전부!)
+        # S3에 업로드 
         result = await s3_service.upload_pil_image(
             pil_image=ai_image,
             image_format="PNG"
