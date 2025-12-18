@@ -4,3 +4,4 @@ boto3==1.34.19              # boto3: AWS SDK for Python (S3 업로드용)
 python-dotenv==1.0.0        # python-dotenv: .env 파일에서 환경변수 로드
 requests
 pillow
+openai                      # OpenAI API (GPT-4o-mini 사용)

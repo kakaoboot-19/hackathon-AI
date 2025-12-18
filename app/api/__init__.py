@@ -1,11 +1,11 @@
 """API 라우터"""
+import json
+from datetime import datetime
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from app.services.github_service import get_github_data
 from app.services.s3_service import s3_service
-from PIL import Image, ImageDraw
-# from app.ai.analyzer import analyze_gitbti
-# from app.ai.image_generator import generate_image
+from app.test.demo import analyze_and_generate
 
 router = APIRouter()
 
@@ -19,6 +19,7 @@ class GitBTIRequest(BaseModel):
 
 class RoleData(BaseModel):
     """역할 정보"""
+    name: str = Field(..., description="GitHub 사용자 이름")
     type: str = Field(..., description="Git-BTI 타입 (예: NBFI)")
     description: str = Field(..., description="타입 설명")
 
@@ -50,65 +51,66 @@ class GitBTIResponse(BaseModel):
 async def create_gitbti(req: GitBTIRequest):
     """
     Git-BTI 생성
-    
+
     1. GitHub 데이터 수집
-    2. AI 분석
-    3. 이미지 생성
-    4. S3 업로드
-    5. 결과 반환 (프론트 형식)
+    2. AI 분석 + 이미지 생성 (demo.py)
+    3. S3 업로드
+    4. 결과 반환 (프론트 형식)
     """
     try:
         # 1. GitHub 데이터 수집
-        # github_data = get_github_data(req.username)
-        
-        # # 2. AI 분석
-        # gitbti_result = analyze_gitbti(github_data)
-        
-        # # 3. 이미지 생성
-        # image_bytes = generate_image(gitbti_result)
-        
-        # # 4. S3 업로드
-        # image_url = upload_to_s3(
-        #     image_bytes=image_bytes,
-        #     username=req.username,
-        #     gitbti_type=gitbti_result["type"]
-        # )
+        print(f"1️⃣ GitHub 데이터 수집 중: {req.username}")
+        github_data = get_github_data(req.username)
 
-        # AI 모델이 이미지 생성했다고 가정
-        # (실제로는: ai_image = stable_diffusion.generate(prompt))
-        ai_image = Image.new('RGB', (512, 512), color='#667eea')
-        draw = ImageDraw.Draw(ai_image)
-        draw.text((200, 250), "Test Image", fill='white')
+        # DEBUG: GitHub 데이터 확인
+        print("\n📦 GitHub 데이터 미리보기:")
+        print(f"   - 사용자: {github_data['data']['user']['login']}")
+        print(f"   - 이름: {github_data['data']['user'].get('name', 'N/A')}")
+        print(f"   - 레포지토리 수: {len(github_data['data']['user']['repositories']['nodes'])}")
+        if github_data['data']['user']['repositories']['nodes']:
+            first_repo = github_data['data']['user']['repositories']['nodes'][0]
+            print(f"   - 첫 번째 레포: {first_repo['name']}")
+            print(f"   - 주 언어: {first_repo.get('primaryLanguage', {}).get('name', 'None')}")
+        print()
 
-        # S3에 업로드 
-        result = await s3_service.upload_pil_image(
+        # 2. AI 분석 + 이미지 생성 (demo.py 로직)
+        print("2️⃣ AI 분석 및 이미지 생성 중...")
+        result = analyze_and_generate(github_data)
+        analysis = result["analysis"]
+        ai_image = result["image"]
+
+        # 3. S3 업로드
+        print("3️⃣ S3 업로드 중...")
+        s3_result = await s3_service.upload_pil_image(
             pil_image=ai_image,
             image_format="PNG"
         )
 
-        print("✅ S3 업로드 완료!")
-        print(f"   URL: {result['image_url']}")
-        print(f"   Key: {result['file_key']}")
+        print("✅ 완료!")
+        print(f"   Git-BTI 타입: {analysis['final_word']}")
+        print(f"   이미지 URL: {s3_result['image_url']}")
 
-        return result
-        
-        # 5. 프론트 형식으로 응답
-        # return GitBTIResponse(
-        #     role=RoleData(
-        #         type=gitbti_result["type"],
-        #         description=gitbti_result["description"]
-        #     ),
-        #     image=ImageData(
-        #         url=image_url,
-        #         description=gitbti_result.get("image_description", "Git-BTI 캐릭터 이미지")
-        #     ),
-        #     stats=StatsData(
-        #         dayVsNight=gitbti_result["stats"]["dayVsNight"],
-        #         steadyVsBurst=gitbti_result["stats"]["steadyVsBurst"],
-        #         indieVsCrew=gitbti_result["stats"]["indieVsCrew"],
-        #         specialVsGeneral=gitbti_result["stats"]["specialVsGeneral"]
-        #     )
-        # )
-        
+        # 4. 프론트 형식으로 응답
+        # percentage를 파싱해서 stats로 변환 (임시 - 나중에 수정 필요)
+        # TODO: demo.py에서 percentage를 명확한 형식으로 리턴하도록 수정
+        return GitBTIResponse(
+            role=RoleData(
+                name="흑마법사",
+                type=analysis["final_word"],
+                description=analysis["final_result"]
+            ),
+            image=ImageData(
+                url=s3_result["image_url"],
+                description="Git-BTI 캐릭터 이미지"
+            ),
+            stats=StatsData(
+                dayVsNight=50,  # TODO: percentage에서 파싱
+                steadyVsBurst=50,
+                indieVsCrew=50,
+                specialVsGeneral=50
+            )
+        )
+
     except Exception as e:
+        print(f"❌ 에러 발생: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

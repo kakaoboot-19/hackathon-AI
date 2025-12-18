@@ -1,4 +1,5 @@
 """GitHub API 서비스"""
+import os
 import requests
 # from app.config import settings
 from app.ai.queries import GITHUB_QUERY
