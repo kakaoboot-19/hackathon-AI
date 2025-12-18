@@ -1,5 +1,5 @@
 # ========== Builder Stage ==========
-FROM python:3.10.10-slim as builder
+FROM python:3.13.9 as builder
 
 WORKDIR /code
 
@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir -r /code/requirement.txt
 
 
 # ========== Runtime Stage ==========
-FROM python:3.10.10-slim
+FROM python:3.13.9
 
 WORKDIR /code
 
