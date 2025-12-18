@@ -111,10 +111,10 @@ def prompt_generator(result):
 
         # --- D. stats 필드 추가 ---
         result_json['stats'] = {
-            "dayVsNight": result['work_time']['percent'],
-            "steadyVsBurst": result['commit_style']['percent'],
-            "indieVsCrew": result['social_style']['percent'],
-            "specialVsGeneral": result['language_concentration']['percent']
+            "dayVsNight": result['work_time']['day_percent'],
+            "steadyVsBurst": result['commit_style']['atom_percent'],
+            "indieVsCrew": result['social_style']['crew_percent'],
+            "specialVsGeneral": result['language_concentration']['specialist_percent']
         }
 
         return result_json

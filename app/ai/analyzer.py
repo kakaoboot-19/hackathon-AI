@@ -77,10 +77,12 @@ def get_time_type(commit_timestamps):
     night_percent = (night_count / total) * 100
     main_trait = "Night" if night_percent >= 50 else "Day"
     main_percent = night_percent if main_trait == "Night" else (100 - night_percent)
+    day_percent = 100-night_percent
 
     return {
         "trait": main_trait,      
-        "percent": round(main_percent)
+        "percent": round(main_percent),
+        "day_percent": round(day_percent)
     }
 
 #커밋 style
@@ -106,12 +108,13 @@ def analyze_work_style(additions,deletions):
     # Bulk가 50% 이상이면 Bulk 타입, 아니면 Atom 타입
     main_trait = "Bulk" if bulk_percent >= 50 else "Atom"
     main_percent = bulk_percent if main_trait == "Bulk" else (100 - bulk_percent)
-
+    atom_percent = 100-bulk_percent
     
     return {
         "trait": main_trait,          
         "percent": round(main_percent), 
-        "description": f"{main_trait} 성향이 {main_percent:.0f}% 입니다."
+        "description": f"{main_trait} 성향이 {main_percent:.0f}% 입니다.",
+        "atom_percent": round(atom_percent)
     }
 
 #social style 판단
@@ -141,10 +144,11 @@ def analyze_social_style_percent(coll):
     # (사실상 거의 항상 Indie가 나오겠지만, Team 활동이 10%만 넘어도 '협업 지향'으로 해석 가능)
     main_trait = "Indie" if indie_percent >= 50 else "Crew"
     main_percent = indie_percent if main_trait == "Indie" else crew_percent
-    
+
     return {
         "trait": main_trait,
-        "percent": round(main_percent)
+        "percent": round(main_percent),
+        "crew_percent": round(crew_percent)
     }
 
 
@@ -202,6 +206,7 @@ def analyze_entropy_concentration(nodes):
     main_trait = "Specialist" if specialist_percent >= 50 else "Generalist"
     main_percent = specialist_percent if main_trait == "Specialist" else (100-specialist_percent)
 
+
     # ✅ 6. Top 3 언어 추출
     top_3 = sorted(lang_stats.items(), key=lambda x: x[1], reverse=True)[:3]
     top_languages = [
@@ -215,5 +220,6 @@ def analyze_entropy_concentration(nodes):
     return {
         "trait": main_trait,
         "percent": round(main_percent), 
-        "top_languages": top_languages
+        "top_languages": top_languages,
+        "specialist_percent": round(specialist_percent)
     }
