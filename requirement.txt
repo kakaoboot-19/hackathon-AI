@@ -5,3 +5,4 @@ python-dotenv==1.0.0        # python-dotenv: .env 파일에서 환경변수 로�
 requests
 pillow
 openai                      # OpenAI API (GPT-4o-mini 사용)
+google-generativeai==0.8.3

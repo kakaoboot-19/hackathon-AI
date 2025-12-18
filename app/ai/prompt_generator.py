@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 import json
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -54,7 +53,7 @@ system_prompt = """
 def prompt_generator(result):
 
     load_dotenv()
-    client = genai.Client(api_key=GEMINI_API_KEY)
+    genai.configure(api_key=GEMINI_API_KEY)
 
     # result로부터 유형 뽑기
     type_string = "".join([result[key]['trait'][0].upper() for key in TARGET])
@@ -65,7 +64,7 @@ def prompt_generator(result):
         username=result['user_name'],
         main_lang=result['language_concentration']['top_languages'],
         dev_type=result['dev_type'],
-        
+
         # 개발 성향
         work_time=result['work_time'],
         commit_style=result['commit_style'],
@@ -75,11 +74,11 @@ def prompt_generator(result):
 
     try:
         # --- B. Gemini에게 요청 ---
-        response = client.models.generate_content(
-            model="gemini-2.5-flash", # 해커톤용 가성비 & 속도 최강 모델
-            contents=filled_prompt,
-            config=types.GenerateContentConfig(
-                response_mime_type="application/json" # ★ 핵심: Gemini에게 JSON만 뱉으라고 강제함
+        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        response = model.generate_content(
+            filled_prompt,
+            generation_config=genai.types.GenerationConfig(
+                response_mime_type="application/json"
             )
         )
 

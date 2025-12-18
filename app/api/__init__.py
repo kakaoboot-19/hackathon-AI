@@ -6,6 +6,9 @@ from pydantic import BaseModel, Field
 from app.services.github_service import get_github_data
 from app.services.s3_service import s3_service
 from app.test.demo import analyze_and_generate
+from app.test.demo import generate_image
+from app.ai.analyzer import analyzer
+from app.ai.prompt_generator import prompt_generator
 
 router = APIRouter()
 
@@ -19,7 +22,7 @@ class GitBTIRequest(BaseModel):
 
 class RoleData(BaseModel):
     """역할 정보"""
-    name: str = Field(..., description="GitHub 사용자 이름")
+    role: str = Field(..., description="GitHub 사용자 이름")
     type: str = Field(..., description="Git-BTI 타입 (예: NBFI)")
     description: str = Field(..., description="타입 설명")
 
@@ -62,6 +65,10 @@ async def create_gitbti(req: GitBTIRequest):
         print(f"1️⃣ GitHub 데이터 수집 중: {req.username}")
         github_data = get_github_data(req.username)
 
+        data_result = analyzer(github_data)
+        prompt_result = prompt_generator(data_result)
+
+
         # DEBUG: GitHub 데이터 확인
         print("\n📦 GitHub 데이터 미리보기:")
         print(f"   - 사용자: {github_data['data']['user']['login']}")
@@ -73,12 +80,11 @@ async def create_gitbti(req: GitBTIRequest):
             print(f"   - 주 언어: {first_repo.get('primaryLanguage', {}).get('name', 'None')}")
         print()
 
+        
         # 2. AI 분석 + 이미지 생성 (demo.py 로직)
+        ai_image = generate_image(prompt_result['image_prompt'])
         print("2️⃣ AI 분석 및 이미지 생성 중...")
-        result = analyze_and_generate(github_data)
-        analysis = result["analysis"]
-        ai_image = result["image"]
-
+       
         # 3. S3 업로드
         print("3️⃣ S3 업로드 중...")
         s3_result = await s3_service.upload_pil_image(
@@ -87,7 +93,7 @@ async def create_gitbti(req: GitBTIRequest):
         )
 
         print("✅ 완료!")
-        print(f"   Git-BTI 타입: {analysis['final_word']}")
+        print(f"   Git-BTI 타입: {prompt_result["type"]}")
         print(f"   이미지 URL: {s3_result['image_url']}")
 
         # 4. 프론트 형식으로 응답
@@ -95,9 +101,9 @@ async def create_gitbti(req: GitBTIRequest):
         # TODO: demo.py에서 percentage를 명확한 형식으로 리턴하도록 수정
         return GitBTIResponse(
             role=RoleData(
-                name="흑마법사",
-                type=analysis["final_word"],
-                description=analysis["final_result"]
+                role=prompt_result["role"],
+                type=prompt_result["type"],
+                description=prompt_result["description"]
             ),
             image=ImageData(
                 url=s3_result["image_url"],

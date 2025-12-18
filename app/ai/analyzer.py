@@ -105,7 +105,7 @@ def analyze_work_style(additions,deletions):
     # 3. 성향 결정 (과반수 기준)
     # Bulk가 50% 이상이면 Bulk 타입, 아니면 Atom 타입
     main_trait = "Bulk" if bulk_percent >= 50 else "Atom"
-    main_percent = bulk_percent if main_trait == "Bulk" else atom_percent
+    main_percent = bulk_percent if main_trait == "Bulk" else (1-bulk_percent)
     
     return {
         "trait": main_trait,          
@@ -114,7 +114,7 @@ def analyze_work_style(additions,deletions):
     }
 
 #social style 판단
-def analyze_social_style_percent(collection):
+def analyze_social_style_percent(coll):
     
     # 1. Indie 활동 (Coding)
     commits = coll['totalCommitContributions']
