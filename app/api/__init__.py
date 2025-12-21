@@ -89,7 +89,7 @@ async def process_single_user(username: str) -> dict:
         username: GitHub 사용자 이름
 
     Returns:
-        dict: 사용자의 Git-BTI 결과
+        dict: 사용자의 Git-BTI 결과 또는 에러 정보
     """
     try:
         print(f"🔄 [{username}] 처리 시작...")
@@ -121,12 +121,19 @@ async def process_single_user(username: str) -> dict:
             "role_kr": prompt_result["role_kr"],
             "description": prompt_result["description"],
             "image_url": s3_result["image_url"],
-            "stats": prompt_result["stats"]
+            "stats": prompt_result["stats"],
+            "success": True
         }
 
     except Exception as e:
         print(f"❌ [{username}] 에러 발생: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"[{username}] 처리 실패: {str(e)}")
+        # HTTPException 대신 에러 정보를 dict로 반환 (다른 사용자 처리 계속)
+        return {
+            "username": username,
+            "error": str(e),
+            "error_type": type(e).__name__,
+            "success": False
+        }
 
 
 # ===== Batch API Endpoint =====
@@ -161,13 +168,45 @@ async def create_gitbti_batch(req: GitBTIBatchRequest):
         print(f"   사용자: {', '.join(unique_usernames)}")
         print(f"{'='*60}\n")
 
-        # 1. 모든 사용자를 병렬로 처리
+        # 1. 모든 사용자를 병렬로 처리 (부분 실패 허용)
         results = await asyncio.gather(
             *[process_single_user(username.strip()) for username in unique_usernames],
-            return_exceptions=False  # 에러 발생 시 즉시 중단
+            return_exceptions=True  # 개별 에러 허용, 다른 사용자 처리 계속
         )
 
-        # 2. 응답 형식으로 변환
+        # 2. 성공/실패 결과 분리
+        successful_results = []
+        failed_results = []
+
+        for result in results:
+            # asyncio.gather에서 Exception이 반환될 수 있음
+            if isinstance(result, Exception):
+                failed_results.append({
+                    "username": "Unknown",
+                    "error": str(result),
+                    "error_type": type(result).__name__
+                })
+                print(f"❌ 예외 발생: {type(result).__name__} - {str(result)}")
+            elif result.get("success", False):
+                successful_results.append(result)
+            else:
+                failed_results.append(result)
+                print(f"❌ [{result.get('username', 'Unknown')}] 실패: {result.get('error', 'Unknown error')}")
+
+        # 성공한 결과가 없으면 에러
+        if not successful_results:
+            raise HTTPException(
+                status_code=500,
+                detail=f"모든 사용자 처리 실패. 총 {len(failed_results)}명 실패. 에러: {[f.get('error', 'Unknown') for f in failed_results]}"
+            )
+
+        # 실패한 사용자가 있으면 경고 로그
+        if failed_results:
+            print(f"\n⚠️  부분 실패: {len(successful_results)}명 성공, {len(failed_results)}명 실패")
+            for failed in failed_results:
+                print(f"   - [{failed.get('username', 'Unknown')}]: {failed.get('error', 'Unknown error')}")
+
+        # 3. 응답 형식으로 변환 (성공한 결과만)
         user_results = [
             UserGitBTIResult(
                 username=result["username"],
@@ -188,17 +227,17 @@ async def create_gitbti_batch(req: GitBTIBatchRequest):
                     specialVsGeneral=result["stats"]["specialVsGeneral"]
                 )
             )
-            for result in results
+            for result in successful_results
         ]
 
-        # 3. 팀 리포트 생성 (2명 이상일 때만)
+        # 4. 팀 리포트 생성 (성공한 사용자가 2명 이상일 때만)
         team_report = None
-        if len(results) >= 2:
+        if len(successful_results) >= 2:
             print(f"\n🤝 팀 리포트 생성 중...")
             # username과 type만 추출
             team_data = [
                 {"username": r["username"], "type": r["type"]}
-                for r in results
+                for r in successful_results
             ]
             team_report_data = await asyncio.to_thread(generate_team_report, team_data)
 
@@ -213,7 +252,7 @@ async def create_gitbti_batch(req: GitBTIBatchRequest):
             print(f"✅ 팀 리포트 생성 완료!")
 
         print(f"\n{'='*60}")
-        print(f"🎉 배치 처리 완료: {len(results)}명")
+        print(f"🎉 배치 처리 완료: 성공 {len(successful_results)}명 / 실패 {len(failed_results)}명")
         print(f"{'='*60}\n")
 
         return GitBTIBatchResponse(
