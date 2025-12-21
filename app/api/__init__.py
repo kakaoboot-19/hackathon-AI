@@ -141,14 +141,29 @@ async def create_gitbti_batch(req: GitBTIBatchRequest):
     3. 결과 반환
     """
     try:
+        # 배치 요청 검증
+        if not req.usernames:
+            raise HTTPException(status_code=400, detail="Username list cannot be empty")
+
+        # 중복 제거
+        unique_usernames = list(dict.fromkeys(req.usernames))  # 순서 유지하면서 중복 제거
+
+        if len(unique_usernames) != len(req.usernames):
+            print(f"⚠️  중복된 사용자명 제거: {len(req.usernames)}명 → {len(unique_usernames)}명")
+
+        # 각 username 기본 검증
+        for username in unique_usernames:
+            if not username or not isinstance(username, str) or not username.strip():
+                raise HTTPException(status_code=400, detail=f"Invalid username: {username}")
+
         print(f"\n{'='*60}")
-        print(f"📦 배치 처리 시작: {len(req.usernames)}명")
-        print(f"   사용자: {', '.join(req.usernames)}")
+        print(f"📦 배치 처리 시작: {len(unique_usernames)}명")
+        print(f"   사용자: {', '.join(unique_usernames)}")
         print(f"{'='*60}\n")
 
         # 1. 모든 사용자를 병렬로 처리
         results = await asyncio.gather(
-            *[process_single_user(username) for username in req.usernames],
+            *[process_single_user(username.strip()) for username in unique_usernames],
             return_exceptions=False  # 에러 발생 시 즉시 중단
         )
 
