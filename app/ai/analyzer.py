@@ -9,10 +9,18 @@ def analyzer(graphql_data):
     commit_messages = []
     additions = []
     deletions = []
-    
-    user_name = graphql_data['data']['user']['login']
-    coll = graphql_data['data']['user']['contributionsCollection']
-    repos = graphql_data['data']['user']['repositories']['nodes']
+
+    # GraphQL 데이터 안전하게 접근
+    try:
+        user_data = graphql_data.get('data', {}).get('user', {})
+        if not user_data:
+            raise ValueError("User data not found in GraphQL response")
+
+        user_name = user_data.get('login', 'Unknown')
+        coll = user_data.get('contributionsCollection', {})
+        repos = user_data.get('repositories', {}).get('nodes', [])
+    except (KeyError, TypeError, AttributeError) as e:
+        raise ValueError(f"Invalid GraphQL data structure: {str(e)}")
     
     for repo in repos:  # ✅ node → repo
         if not repo.get('defaultBranchRef'):
@@ -25,12 +33,10 @@ def analyzer(graphql_data):
             
             if commit.get("message"):
                 commit_messages.append(commit["message"])
-            
-            if commit.get("additions"):
-                additions.append(commit["additions"])
-                
-            if commit.get("deletions"):
-                deletions.append(commit["deletions"])
+
+            # 0 값도 포함하여 additions와 deletions 배열 길이를 일치시킴
+            additions.append(commit.get("additions", 0))
+            deletions.append(commit.get("deletions", 0))
             
             if commit.get("committedDate"):
                 commit_hours.append(commit["committedDate"])
@@ -88,19 +94,26 @@ def get_time_type(commit_timestamps):
 #커밋 style
 def analyze_work_style(additions,deletions):
     bulk_count = 0
-    
+
     # 기준선 (Threshold): 50줄 이상이면 Bulk로 간주
-    BULK_THRESHOLD = 100 
+    BULK_THRESHOLD = 100
+
+    # 커밋이 없는 경우 기본값 반환
+    if not additions or len(additions) == 0:
+        return {
+            "trait": "Atom",
+            "percent": 0,
+            "description": "Atom 성향이 0% 입니다.",
+            "atom_percent": 100
+        }
 
     # 하나의 커밋당 addition + deletion을 더했을 때 100줄이 넘으면
     # addition에 커밋당 addition 수가 들어가 있음
 
     for add, delete in zip(additions, deletions):
         total_change = add + delete
-        if total_change >= BULK_THRESHOLD: # 100줄을 넘으면 
+        if total_change >= BULK_THRESHOLD: # 100줄을 넘으면
             bulk_count += 1
-        if total_change == 0:
-            return {"type": "Atom", "percent": 0} 
         # 2. 퍼센트 계산
     bulk_percent = (bulk_count / len(additions)) * 100
     
@@ -119,15 +132,15 @@ def analyze_work_style(additions,deletions):
 
 #social style 판단
 def analyze_social_style_percent(coll):
-    
+
     # 1. Indie 활동 (Coding)
-    commits = coll['totalCommitContributions']
+    commits = coll.get('totalCommitContributions', 0)
 
     # 2. Team 활동 (Socializing)
     # PR은 혼자 할 수도 있지만, GitHub에서는 보통 협업의 시작으로 봅니다.
-    reviews = coll['totalPullRequestReviewContributions']
-    issues = coll['totalIssueContributions']
-    prs = coll['totalPullRequestContributions']
+    reviews = coll.get('totalPullRequestReviewContributions', 0)
+    issues = coll.get('totalIssueContributions', 0)
+    prs = coll.get('totalPullRequestContributions', 0)
     
     team_actions = reviews + issues + prs
     total_actions = commits + team_actions
@@ -162,12 +175,16 @@ def analyze_entropy_concentration(nodes):
     total_bytes = 0
     
     for node in nodes:
-        if node['languages']['edges']:
-            for edge in node['languages']['edges']:
-                size = edge['size']
-                lang_name = edge['node']['name']
-                lang_stats[lang_name] += size
-                total_bytes += size
+        languages = node.get('languages', {})
+        edges = languages.get('edges', [])
+        if edges:
+            for edge in edges:
+                size = edge.get('size', 0)
+                lang_node = edge.get('node', {})
+                lang_name = lang_node.get('name', 'Unknown')
+                if size > 0:  # 유효한 크기만 집계
+                    lang_stats[lang_name] += size
+                    total_bytes += size
                 
     if total_bytes == 0:
         return {"trait": "Generalist", "percent": 0}

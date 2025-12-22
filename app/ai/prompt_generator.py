@@ -62,10 +62,26 @@ def prompt_generator(result):
 
     """
 
-    with open('app/ai/gitbti_doc.json', 'r', encoding='utf-8') as file:
-        gitbti_docs = json.load(file)
+    # JSON 파일 경로 설정 (절대 경로 사용)
+    json_path = os.path.join(os.path.dirname(__file__), 'gitbti_doc.json')
+
+    # 파일 존재 확인
+    if not os.path.exists(json_path):
+        raise FileNotFoundError(f"Required configuration file not found: {json_path}")
+
+    # JSON 파일 로드
+    try:
+        with open(json_path, 'r', encoding='utf-8') as file:
+            gitbti_docs = json.load(file)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Invalid JSON format in gitbti_doc.json: {str(e)}")
 
     load_dotenv()
+
+    # GEMINI API KEY 검증
+    if not GEMINI_API_KEY:
+        raise ValueError("GEMINI_API_KEY environment variable not set")
+
     client = genai.Client(api_key=GEMINI_API_KEY)
 
     # result로부터 유형 뽑기
@@ -74,13 +90,17 @@ def prompt_generator(result):
 
     # git-bti document로 부터 정해진 role, description 가져오기
     type_doc = next((gitbti_doc for gitbti_doc in gitbti_docs if gitbti_doc['type'] == type_string), None)
-    
+
+    # type_doc이 None인 경우 처리
+    if not type_doc:
+        raise ValueError(f"Unknown developer type: {type_string}. Please check gitbti_doc.json configuration.")
+
     # 프롬프트 내용 채우기
     filled_prompt = system_prompt.format(
         username=result['user_name'],
-        main_lang=result['language_concentration']['top_languages'],
+        main_lang=result['language_concentration'].get('top_languages', []),
         dev_type=result['dev_type'],
-        
+
         # 개발 성향
         work_time=result['work_time'],
         commit_style=result['commit_style'],
@@ -103,22 +123,33 @@ def prompt_generator(result):
             )
         )
 
+        # 응답 검증
+        if not response or not hasattr(response, 'text') or not response.text:
+            raise ValueError("Empty response from Gemini API")
+
         # --- C. 결과 파싱 ---
-        result_json = json.loads(response.text)
+        try:
+            result_json = json.loads(response.text)
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Invalid JSON response from Gemini API: {str(e)}")
+
         result_json['role_kr'] = type_doc['role']['kr']
         result_json['role_en'] = type_doc['role']['en']
         result_json['description'] = type_doc['description']
 
         # --- D. stats 필드 추가 ---
         result_json['stats'] = {
-            "dayVsNight": result['work_time']['day_percent'],
-            "steadyVsBurst": result['commit_style']['atom_percent'],
-            "indieVsCrew": result['social_style']['crew_percent'],
-            "specialVsGeneral": result['language_concentration']['specialist_percent']
+            "dayVsNight": result['work_time'].get('day_percent', 50),
+            "steadyVsBurst": result['commit_style'].get('atom_percent', 50),
+            "indieVsCrew": result['social_style'].get('crew_percent', 50),
+            "specialVsGeneral": result['language_concentration'].get('specialist_percent', 50)
         }
 
         return result_json
 
+    except json.JSONDecodeError as e:
+        print(f"Gemini JSON 파싱 에러: {e}")
+        # 에러 시 기본값 반환 (해커톤 시연 멈춤 방지)
     except Exception as e:
         print(f"Gemini API 호출 중 에러 발생: {e}")
         # 에러 시 기본값 반환 (해커톤 시연 멈춤 방지)
