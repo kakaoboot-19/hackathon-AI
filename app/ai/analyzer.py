@@ -33,12 +33,10 @@ def analyzer(graphql_data):
             
             if commit.get("message"):
                 commit_messages.append(commit["message"])
-            
-            if commit.get("additions"):
-                additions.append(commit["additions"])
-                
-            if commit.get("deletions"):
-                deletions.append(commit["deletions"])
+
+            # 0 값도 포함하여 additions와 deletions 배열 길이를 일치시킴
+            additions.append(commit.get("additions", 0))
+            deletions.append(commit.get("deletions", 0))
             
             if commit.get("committedDate"):
                 commit_hours.append(commit["committedDate"])
