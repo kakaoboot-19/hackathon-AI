@@ -1,5 +1,6 @@
 """GitHub API 서비스"""
 import os
+import re
 import requests
 # from app.config import settings
 from app.ai.queries import GITHUB_QUERY
@@ -28,9 +29,13 @@ def get_github_data(username: str) -> dict:
     if not username:
         raise ValueError("Username cannot be empty or whitespace")
 
-    # GitHub username 형식 검증 (영문, 숫자, 하이픈만 허용)
-    if not username.replace("-", "").replace("_", "").isalnum():
+    # GitHub username 형식 검증 (영문, 숫자, 하이픈, 언더스코어만 허용)
+    if not re.match(r'^[a-zA-Z0-9_-]+$', username):
         raise ValueError(f"Invalid username format: {username}. Only alphanumeric characters, hyphens, and underscores are allowed.")
+
+    # 하이픈으로 시작하거나 끝나는 경우 차단
+    if username.startswith('-') or username.endswith('-'):
+        raise ValueError(f"Username cannot start or end with a hyphen: {username}")
 
     if len(username) > 39:  # GitHub username 최대 길이
         raise ValueError(f"Username too long: {username}. Maximum 39 characters allowed.")
